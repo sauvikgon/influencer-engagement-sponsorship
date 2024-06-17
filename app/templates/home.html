@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Influencer Engagement and Sponsorship Coordination Platform</h1>
+    <p class="lead">Connect sponsors with influencers to advertise products and services effectively.</p>
+    <hr class="my-4">
+    <p>Sign up as a sponsor or influencer to get started.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('main.register') }}" role="button">Register</a>
+</div>
+{% endblock %}

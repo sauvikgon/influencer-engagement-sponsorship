@@ -1,0 +1,7 @@
+{% extends "sponsor_dashboard.html" %}
+{% block tab_content %}
+<h2>Profile</h2>
+<p>Company Name: {{ current_user.username }}</p>
+<p>Industry: {{ current_user.industry }}</p>
+<p>Budget: {{ current_user.budget }}</p>
+{% endblock %}

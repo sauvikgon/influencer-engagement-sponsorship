@@ -1,0 +1,12 @@
+{% extends "sponsor_dashboard.html" %}
+{% block tab_content %}
+<h2>Your Campaigns</h2>
+<a href="{{ url_for('main.new_campaign') }}" class="btn btn-primary">Create New Campaign</a>
+<ul>
+    {% for campaign in campaigns %}
+    <li>{{ campaign.name }} - {{ campaign.description }}
+        <a href="{{ url_for('main.new_ad_request', campaign_id=campaign.id) }}" class="btn btn-secondary">Create Ad Request</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "influencer_dashboard.html" %}
+{% block tab_content %}
+<h2>Profile</h2>
+<p>Name: {{ current_user.username }}</p>
+<p>Category: {{ current_user.category }}</p>
+<p>Niche: {{ current_user.niche }}</p>
+<p>Reach: {{ current_user.reach }}</p>
+{% endblock %}

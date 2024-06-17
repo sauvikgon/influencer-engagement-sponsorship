@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h1>Welcome {{ current_user.username }}</h1>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('main.admin_info') }}">Info</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('main.admin_find') }}">Find</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('main.admin_stats') }}">Stats</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+    </li>
+</ul>
+<div class="tab-content mt-3">
+    {% block tab_content %}{% endblock %}
+</div>
+{% endblock %}

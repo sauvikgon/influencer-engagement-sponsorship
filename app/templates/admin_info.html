@@ -1,0 +1,22 @@
+{% extends "admin_dashboard.html" %}
+{% block tab_content %}
+<h2>Information</h2>
+<h3>Users</h3>
+<ul>
+    {% for user in users %}
+    <li>{{ user.username }} - {{ user.role }}</li>
+    {% endfor %}
+</ul>
+<h3>Campaigns</h3>
+<ul>
+    {% for campaign in campaigns %}
+    <li>{{ campaign.name }} - {{ campaign.description }}</li>
+    {% endfor %}
+</ul>
+<h3>Ad Requests</h3>
+<ul>
+    {% for ad_request in ad_requests %}
+    <li>{{ ad_request.requirements }} - {{ ad_request.status }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

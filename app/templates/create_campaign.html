@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Create Campaign{% endblock %}
+{% block content %}
+<h2>Create Campaign</h2>
+<form method="POST" action="{{ url_for('main.new_campaign') }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.name.label(class="form-control-label") }}
+        {{ form.name(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.description.label(class="form-control-label") }}
+        {{ form.description(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.budget.label(class="form-control-label") }}
+        {{ form.budget(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.visibility.label(class="form-control-label") }}
+        {{ form.visibility(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% endblock %}

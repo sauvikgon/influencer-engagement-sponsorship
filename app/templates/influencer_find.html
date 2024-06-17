@@ -1,0 +1,10 @@
+{% extends "influencer_dashboard.html" %}
+{% block tab_content %}
+<h2>Find Campaigns</h2>
+<form method="GET" action="{{ url_for('main.influencer_find') }}">
+    <div class="form-group">
+        <input type="text" name="search" class="form-control" placeholder="Search for campaigns...">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+{% endblock %}

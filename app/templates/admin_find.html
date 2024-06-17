@@ -1,0 +1,10 @@
+{% extends "admin_dashboard.html" %}
+{% block tab_content %}
+<h2>Find Users</h2>
+<form method="GET" action="{{ url_for('main.admin_find') }}">
+    <div class="form-group">
+        <input type="text" name="search" class="form-control" placeholder="Search for users...">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+{% endblock %}

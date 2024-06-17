@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Sponsor Dashboard{% endblock %}
+{% block content %}
+<h1>Welcome {{ current_user.username }}</h1>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('main.sponsor_profile') }}">Profile</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('main.sponsor_campaigns') }}">Campaigns</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('main.sponsor_find') }}">Find</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('main.sponsor_stats') }}">Stats</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+    </li>
+</ul>
+<div class="tab-content mt-3">
+    {% block tab_content %}{% endblock %}
+</div>
+{% endblock %}
