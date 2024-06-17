@@ -2,45 +2,79 @@ from flask import Blueprint, render_template, url_for, flash, redirect, request
 from flask_login import login_user, current_user, logout_user, login_required
 from app import db
 from app.models import User, Campaign, AdRequest
-from app.forms import RegistrationForm, LoginForm, CampaignForm, AdRequestForm
-from werkzeug.security import generate_password_hash, check_password_hash
+# from app.forms import RegistrationForm, LoginForm, CampaignForm, AdRequestForm
+from app.forms import SponsorRegistrationForm, InfluencerRegistrationForm, LoginForm, CampaignForm, AdRequestForm
+from werkzeug.security import generate_password_hash
 
 main = Blueprint('main', __name__)
+
+# # We have commented this because this wwas showing home page we need to show loginpage
+# @main.route('/')
+# @main.route('/home')
+# def home():
+#     return render_template('home-new.html')
 
 @main.route('/')
 @main.route('/home')
 def home():
-    return render_template('home.html')
+    form = LoginForm()  # Replace with your actual form class
+    return render_template('home-new.html', form=form)
 
-@main.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegistrationForm()
+# @main.route('/register', methods=['GET', 'POST'])
+# def register():
+#     form = RegistrationForm()
+#     if form.validate_on_submit():
+#         hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+#         user = User(username=form.username.data, email=form.email.data, password=hashed_password, role=form.role.data)
+#         db.session.add(user)
+#         db.session.commit()
+#         flash('Your account has been created! You are now able to log in', 'success')
+#         return redirect(url_for('main.login'))
+#     return render_template('register.html', title='Register', form=form)
+
+@main.route('/register/sponsor', methods=['GET', 'POST'])
+def register_sponsor():
+    form = SponsorRegistrationForm()
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password, role=form.role.data)
+        user = User(username=form.username.data, email=form.email.data, role='sponsor')
+        user.set_password(form.password.data)
+        user.industry = form.industry.data
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been created! You are now able to log in', 'success')
+        flash('You have successfully registered as a sponsor.')
         return redirect(url_for('main.login'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register_sponsor.html', form=form)
+
+@main.route('/register/influencer', methods=['GET', 'POST'])
+def register_influencer():
+    form = InfluencerRegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data, role='influencer')
+        user.set_password(form.password.data)
+        user.platforms = form.platforms.data
+        user.category = form.category.data
+        user.niche = form.niche.data
+        db.session.add(user)
+        db.session.commit()
+        flash('You have successfully registered as an influencer.')
+        return redirect(url_for('main.login'))
+    return render_template('register_influencer.html', form=form)
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user and check_password_hash(user.password, form.password.data):
+        if user and user.check_password(form.password.data):
             login_user(user)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('main.dashboard'))
-        else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+            return redirect(url_for('main.dashboard'))
+        flash('Invalid username or password')
+    return render_template('login.html', form=form)
 
 @main.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('main.home'))
+    return redirect(url_for('main.login'))
 
 @main.route('/dashboard')
 @login_required
@@ -85,13 +119,23 @@ def sponsor_profile():
         return render_template('sponsor_profile.html')
     return redirect(url_for('main.home'))
 
+# # There was a error with code. So we had to modify it below
+# @main.route('/sponsor/campaigns')
+# @login_required
+# def sponsor_campaigns():
+#     if current_user.role == 'sponsor':
+#         campaigns = Campaign.query.filter_by(owner=current_user).all()
+#         return render_template('sponsor_campaigns.html', campaigns=campaigns)
+#     return redirect(url_for('main.home'))
+
 @main.route('/sponsor/campaigns')
 @login_required
 def sponsor_campaigns():
     if current_user.role == 'sponsor':
-        campaigns = Campaign.query.filter_by(owner=current_user).all()
+        campaigns = Campaign.query.filter_by(user_id=current_user.id).all()
         return render_template('sponsor_campaigns.html', campaigns=campaigns)
     return redirect(url_for('main.home'))
+
 
 @main.route('/sponsor/find')
 @login_required
