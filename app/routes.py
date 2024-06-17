@@ -74,7 +74,7 @@ def login():
 @main.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('main.login'))
+    return redirect(url_for('main.home'))
 
 @main.route('/dashboard')
 @login_required
@@ -93,7 +93,7 @@ def dashboard():
 def new_campaign():
     form = CampaignForm()
     if form.validate_on_submit():
-        campaign = Campaign(name=form.name.data, description=form.description.data, budget=form.budget.data, visibility=form.visibility.data, owner=current_user)
+        campaign = Campaign(name=form.name.data, description=form.description.data, budget=form.budget.data, visibility=form.visibility.data, user_id=current_user.id)
         db.session.add(campaign)
         db.session.commit()
         flash('Your campaign has been created!', 'success')
