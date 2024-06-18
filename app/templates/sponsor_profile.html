@@ -1,7 +1,75 @@
 {% extends "sponsor_dashboard.html" %}
 {% block tab_content %}
 <h2>Profile</h2>
-<p>Company Name: {{ current_user.username }}</p>
+<!-- <p>Company Name: {{ current_user.username }}</p>
 <p>Industry: {{ current_user.industry }}</p>
-<p>Budget: {{ current_user.budget }}</p>
+<p>Budget: {{ current_user.budget }}</p> -->
+<div class="col-md-9">
+    <div class="profile-main">
+        <h2>Welcome, {{ current_user.username }}!</h2>
+        <h3>Active Campaigns</h3>
+        <ul>
+            {% for campaign in active_campaigns %}
+            <!-- <li>{{ campaign.name }} (Ends: {{ campaign.end_date }})</li> -->
+            <div class="col-md-4">
+                <div class="request-box card">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ campaign.name }}</h4>
+                        <p class="card-text">{{ campaign.details }}</p>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </ul>
+        <h3>New Requests</h3>
+        <div class="row">
+            {% for request in new_requests %}
+            <div class="col-md-4">
+                <div class="request-box card">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ request.campaign.name }}</h4>
+                        <p class="card-text">{{ request.details }}</p>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ request.campaign.id }}">View</button>
+                        <a href="{{ url_for('main.accept_request', id=request.id) }}" class="btn btn-success">Accept</a>
+                        <a href="{{ url_for('main.reject_request', id=request.id) }}" class="btn btn-danger">Reject</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="campaignModal" tabindex="-1" role="dialog" aria-labelledby="campaignModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="campaignModalLabel">Campaign Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Campaign details will be loaded here dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    $('#campaignModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var campaignId = button.data('id');
+
+        var modal = $(this);
+        modal.find('.modal-body').load('/campaign_details/' + campaignId);
+    });
+});
+</script>
 {% endblock %}

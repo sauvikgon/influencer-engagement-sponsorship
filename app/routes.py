@@ -114,12 +114,42 @@ def new_ad_request(campaign_id):
         return redirect(url_for('main.dashboard'))
     return render_template('create_ad_request.html', title='New Ad Request', form=form, campaign_id=campaign_id)
 
+@main.route('/new_ad_request/new/<int:campaign_id>/<int:influencer_id>', methods=['GET', 'POST'])
+@login_required
+def new_ad_request_infl(campaign_id, influencer_id):
+    form = AdRequestForm()
+    if request.method == 'POST':
+        form.influencer.data = influencer_id
+    if form.validate_on_submit():
+        ad_request = AdRequest(
+            campaign_id=campaign_id,
+            influencer_id=influencer_id,
+            requirements=form.requirements.data,
+            payment_amount=form.payment_amount.data,
+            status='Pending'
+        )
+        db.session.add(ad_request)
+        db.session.commit()
+        flash('Your ad request has been created!', 'success')
+        return redirect(url_for('main.influencer_profile'))
+    return render_template('create_ad_request_influencer.html', title='Request New Ad', form=form, campaign_id=campaign_id, influencer_id=influencer_id)
+
 @main.route('/sponsor/profile')
 @login_required
 def sponsor_profile():
-    if current_user.role == 'sponsor':
-        return render_template('sponsor_profile.html')
-    return redirect(url_for('main.home'))
+    if current_user.role != 'sponsor':
+        return redirect(url_for('main.home'))
+
+    sponsor = current_user
+    # active_campaigns = Campaign.query.filter_by(visibility='public').all()
+    active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id)\
+    .filter(Campaign.user_id == sponsor.id, AdRequest.status == "Accepted").all()
+    new_requests = AdRequest.query.filter_by(influencer_id=sponsor.id, status='Pending').all()
+
+    return render_template('sponsor_profile.html',
+                           sponsor=sponsor,
+                           active_campaigns=active_campaigns,
+                           new_requests=new_requests)
 
 # # There was a error with code. So we had to modify it below
 # @main.route('/sponsor/campaigns')
@@ -191,12 +221,12 @@ def update_profile_pic():
             db.session.commit()
     return redirect(url_for('main.influencer_profile'))
 
-@main.route('/view_campaign/<int:id>')
+@main.route('/campaign_details/<int:id>')
 @login_required
 def view_campaign(id):
     # Implement the logic to view campaign details
     campaign = Campaign.query.get_or_404(id)
-    return render_template('login.html', campaign=campaign)
+    return render_template('campaign_details.html', campaign=campaign)
 
 @main.route('/accept_request/<int:id>')
 @login_required
@@ -220,7 +250,10 @@ def reject_request(id):
 @login_required
 def influencer_find():
     if current_user.role == 'influencer':
-        return render_template('influencer_find.html')
+        influencer = current_user
+        active_campaigns = Campaign.query.filter_by(visibility='public').all()
+
+        return render_template('influencer_find.html', influencer=current_user, active_campaigns=active_campaigns)
     return redirect(url_for('main.home'))
 
 @main.route('/influencer/stats')
