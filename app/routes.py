@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, url_for, flash, redirect, request
+from flask import Blueprint, render_template, url_for, flash, redirect, request, current_app
 from flask_login import login_user, current_user, logout_user, login_required
 from app import db
 from app.models import User, Campaign, AdRequest
 # from app.forms import RegistrationForm, LoginForm, CampaignForm, AdRequestForm
 from app.forms import SponsorRegistrationForm, InfluencerRegistrationForm, LoginForm, CampaignForm, AdRequestForm
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
+import os
 
 main = Blueprint('main', __name__)
 
@@ -160,6 +162,18 @@ def influencer_profile():
     if current_user.role == 'influencer':
         return render_template('influencer_profile.html')
     return redirect(url_for('main.home'))
+
+@main.route('/update_profile_pic', methods=['POST'])
+def update_profile_pic():
+    if 'profile_pic' in request.files:
+        file = request.files['profile_pic']
+        if file.filename != '':
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            # Update user's profile picture path in the database
+            current_user.profile_pic = filename
+            db.session.commit()
+    return redirect(url_for('main.influencer_profile'))
 
 @main.route('/influencer/find')
 @login_required

@@ -25,6 +25,7 @@ class User(UserMixin, db.Model):
     platforms = db.Column(db.Text)  # For Influencers
     category = db.Column(db.String(120))  # For Influencers
     niche = db.Column(db.String(120))  # For Influencers
+    profile_pic = db.Column(db.String(20), nullable=False, default='download.png')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
