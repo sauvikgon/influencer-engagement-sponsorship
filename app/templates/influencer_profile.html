@@ -1,15 +1,46 @@
 {% extends "influencer_dashboard.html" %}
+
 {% block tab_content %}
-<h2>Profile</h2>
-<img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_pic) }}" alt="Profile Picture">
-    
-    <!-- Form for updating profile picture -->
-    <form action="{{ url_for('main.update_profile_pic') }}" method="POST" enctype="multipart/form-data">
-        <input type="file" name="profile_pic">
-        <input type="submit" value="Update Profile Picture">
-    </form>
-<p>Name: {{ current_user.username }}</p>
-<p>Category: {{ current_user.category }}</p>
-<p>Niche: {{ current_user.niche }}</p>
-<p>Reach: {{ current_user.reach }}</p>
+<div class="row">
+    <div class="col-md-3">
+        <div class="profile-sidebar">
+            <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_pic) }}" alt="Profile Picture">
+            <form action="{{ url_for('main.update_profile_pic') }}" method="POST" enctype="multipart/form-data">
+                <input type="file" name="profile_pic">
+                <input type="submit" value="Update Profile Picture">
+            </form>
+            <div class="profile-stats">
+                <h4>Rating: {{ influencer.rating }}</h4>
+                <h4>Earnings this month: ${{ influencer.earnings }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="profile-main">
+            <h2>Welcome, {{ current_user.username }}!</h2>
+            <h3>Active Campaigns</h3>
+            <ul>
+                {% for campaign in active_campaigns %}
+                <li>{{ campaign.name }} (Ends: {{ campaign.end_date }})</li>
+                {% endfor %}
+            </ul>
+            <h3>New Requests</h3>
+            <div class="row">
+                {% for request in new_requests %}
+                <div class="col-md-4">
+                    <div class="request-box card">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ request.campaign.name }}</h4>
+                            <p class="card-text">{{ request.details }}</p>
+                            <a href="{{ url_for('main.view_campaign', id=request.campaign.id) }}" class="btn btn-primary">View</a>
+                            <a href="{{ url_for('main.accept_request', id=request.id) }}" class="btn btn-success">Accept</a>
+                            <a href="{{ url_for('main.reject_request', id=request.id) }}" class="btn btn-danger">Reject</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

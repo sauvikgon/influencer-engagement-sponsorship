@@ -1,0 +1,5 @@
+.profile-sidebar img {
+    max-width: 150px; /* Set the width as desired */
+    max-height: 150px; /* Set the height as desired */
+    object-fit: cover; /* This will ensure the image covers the area without stretching */
+}

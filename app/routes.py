@@ -107,7 +107,7 @@ def new_campaign():
 def new_ad_request(campaign_id):
     form = AdRequestForm()
     if form.validate_on_submit():
-        ad_request = AdRequest(campaign_id=campaign_id, influencer_id=current_user.id, requirements=form.requirements.data, payment_amount=form.payment_amount.data, status='Pending')
+        ad_request = AdRequest(campaign_id=campaign_id, influencer_id=form.influencer.data, requirements=form.requirements.data, payment_amount=form.payment_amount.data, status='Pending')
         db.session.add(ad_request)
         db.session.commit()
         flash('Your ad request has been created!', 'success')
@@ -156,12 +156,28 @@ def sponsor_stats():
 
 
 # For Influencers
+# @main.route('/influencer/profile')
+# @login_required
+# def influencer_profile():
+#     if current_user.role == 'influencer':
+#         return render_template('influencer_profile.html')
+#     return redirect(url_for('main.home'))
 @main.route('/influencer/profile')
 @login_required
 def influencer_profile():
-    if current_user.role == 'influencer':
-        return render_template('influencer_profile.html')
-    return redirect(url_for('main.home'))
+    if current_user.role != 'influencer':
+        return redirect(url_for('main.home'))
+
+    influencer = current_user
+    # active_campaigns = Campaign.query.filter_by(visibility='public').all()
+    active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id)\
+    .filter(AdRequest.status == 'Accepted', AdRequest.influencer_id == influencer.id).all()
+    new_requests = AdRequest.query.filter_by(influencer_id=influencer.id, status='Pending').all()
+
+    return render_template('influencer_profile.html',
+                           influencer=influencer,
+                           active_campaigns=active_campaigns,
+                           new_requests=new_requests)
 
 @main.route('/update_profile_pic', methods=['POST'])
 def update_profile_pic():
@@ -173,6 +189,31 @@ def update_profile_pic():
             # Update user's profile picture path in the database
             current_user.profile_pic = filename
             db.session.commit()
+    return redirect(url_for('main.influencer_profile'))
+
+@main.route('/view_campaign/<int:id>')
+@login_required
+def view_campaign(id):
+    # Implement the logic to view campaign details
+    campaign = Campaign.query.get_or_404(id)
+    return render_template('login.html', campaign=campaign)
+
+@main.route('/accept_request/<int:id>')
+@login_required
+def accept_request(id):
+    # Implement the logic to accept ad request
+    ad_request = AdRequest.query.get_or_404(id)
+    ad_request.status = 'Accepted'
+    db.session.commit()
+    return redirect(url_for('main.influencer_profile'))
+
+@main.route('/reject_request/<int:id>')
+@login_required
+def reject_request(id):
+    # Implement the logic to reject ad request
+    ad_request = AdRequest.query.get_or_404(id)
+    ad_request.status = 'Rejected'
+    db.session.commit()
     return redirect(url_for('main.influencer_profile'))
 
 @main.route('/influencer/find')

@@ -42,5 +42,6 @@ class CampaignForm(FlaskForm):
 
 class AdRequestForm(FlaskForm):
     requirements = TextAreaField('Requirements', validators=[DataRequired()])
+    influencer = TextAreaField('Influencer', validators=[DataRequired()])
     payment_amount = FloatField('Payment Amount', validators=[DataRequired()])
     submit = SubmitField('Create Ad Request')
