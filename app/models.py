@@ -48,4 +48,7 @@ class AdRequest(db.Model):
     influencer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     requirements = db.Column(db.Text, nullable=False)
     payment_amount = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String(10), nullable=False)  # 'Pending', 'Accepted', 'Rejected'
+    # status = db.Column(db.String(10), nullable=False)  # 'Pending', 'Accepted', 'Rejected'
+    status_influencer = db.Column(db.String(10), nullable=False)
+    status_sponsor = db.Column(db.String(10), nullable=False)
+    

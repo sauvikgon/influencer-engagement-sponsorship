@@ -10,11 +10,11 @@ import os
 
 main = Blueprint('main', __name__)
 
-# # We have commented this because this wwas showing home page we need to show loginpage
+# # We have commented this because this was showing home page we need to show loginpage
 # @main.route('/')
 # @main.route('/home')
 # def home():
-#     return render_template('home-new.html')
+#     return render_template('home.html')
 
 @main.route('/')
 @main.route('/home')
@@ -107,7 +107,7 @@ def new_campaign():
 def new_ad_request(campaign_id):
     form = AdRequestForm()
     if form.validate_on_submit():
-        ad_request = AdRequest(campaign_id=campaign_id, influencer_id=form.influencer.data, requirements=form.requirements.data, payment_amount=form.payment_amount.data, status='Pending')
+        ad_request = AdRequest(campaign_id=campaign_id, influencer_id=form.influencer.data, requirements=form.requirements.data, payment_amount=form.payment_amount.data, status_influencer='Pending', status_sponsor='Accepted')
         db.session.add(ad_request)
         db.session.commit()
         flash('Your ad request has been created!', 'success')
@@ -126,7 +126,8 @@ def new_ad_request_infl(campaign_id, influencer_id):
             influencer_id=influencer_id,
             requirements=form.requirements.data,
             payment_amount=form.payment_amount.data,
-            status='Pending'
+            status_sponsor='Pending',
+            status_influencer='Accepted'
         )
         db.session.add(ad_request)
         db.session.commit()
@@ -143,8 +144,9 @@ def sponsor_profile():
     sponsor = current_user
     # active_campaigns = Campaign.query.filter_by(visibility='public').all()
     active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id)\
-    .filter(Campaign.user_id == sponsor.id, AdRequest.status == "Accepted").all()
-    new_requests = AdRequest.query.filter_by(influencer_id=sponsor.id, status='Pending').all()
+    .filter(Campaign.user_id == sponsor.id, AdRequest.status_sponsor == "Accepted").all()
+    new_requests = AdRequest.query.join(Campaign, AdRequest.campaign_id == Campaign.id)\
+                              .filter(Campaign.user_id == sponsor.id, AdRequest.status_sponsor == 'Pending').all()
 
     return render_template('sponsor_profile.html',
                            sponsor=sponsor,
@@ -201,8 +203,8 @@ def influencer_profile():
     influencer = current_user
     # active_campaigns = Campaign.query.filter_by(visibility='public').all()
     active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id)\
-    .filter(AdRequest.status == 'Accepted', AdRequest.influencer_id == influencer.id).all()
-    new_requests = AdRequest.query.filter_by(influencer_id=influencer.id, status='Pending').all()
+    .filter(AdRequest.status_influencer == 'Accepted', AdRequest.influencer_id == influencer.id).all()
+    new_requests = AdRequest.query.filter_by(influencer_id=influencer.id, status_influencer='Pending').all()
 
     return render_template('influencer_profile.html',
                            influencer=influencer,
@@ -230,21 +232,39 @@ def view_campaign(id):
 
 @main.route('/accept_request/<int:id>')
 @login_required
-def accept_request(id):
+def accept_request_influencer(id):
     # Implement the logic to accept ad request
     ad_request = AdRequest.query.get_or_404(id)
-    ad_request.status = 'Accepted'
+    ad_request.status_influencer = 'Accepted'
     db.session.commit()
     return redirect(url_for('main.influencer_profile'))
 
 @main.route('/reject_request/<int:id>')
 @login_required
-def reject_request(id):
+def reject_request_influencer(id):
     # Implement the logic to reject ad request
     ad_request = AdRequest.query.get_or_404(id)
-    ad_request.status = 'Rejected'
+    ad_request.status_influencer = 'Rejected'
     db.session.commit()
     return redirect(url_for('main.influencer_profile'))
+
+@main.route('/accept_request/s/<int:id>')
+@login_required
+def accept_request_sponsor(id):
+    # Implement the logic to accept ad request
+    ad_request = AdRequest.query.get_or_404(id)
+    ad_request.status_sponsor = 'Accepted'
+    db.session.commit()
+    return redirect(url_for('main.sponsor_profile'))
+
+@main.route('/reject_request/s/<int:id>')
+@login_required
+def reject_request_sponsor(id):
+    # Implement the logic to reject ad request
+    ad_request = AdRequest.query.get_or_404(id)
+    ad_request.status_sponsor = 'Rejected'
+    db.session.commit()
+    return redirect(url_for('main.sponsor_profile'))
 
 @main.route('/influencer/find')
 @login_required
