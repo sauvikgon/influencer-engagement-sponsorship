@@ -175,8 +175,18 @@ def sponsor_campaigns():
 @login_required
 def sponsor_find():
     if current_user.role == 'sponsor':
-        return render_template('sponsor_find.html')
+        active_influencer = User.query.filter_by(role='influencer').all()
+        # print(active_influencer)
+        return render_template('sponsor_find.html', sponsor=current_user, active_influencer=active_influencer)
     return redirect(url_for('main.home'))
+
+@main.route('/influencer_details/<int:id>')
+@login_required
+def view_influencer(id):
+    # Implement the logic to view campaign details
+    influencer = User.query.get_or_404(id)
+    # print(id)
+    return render_template('influencer_details.html', user=influencer)
 
 @main.route('/sponsor/stats')
 @login_required
