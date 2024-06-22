@@ -102,6 +102,29 @@ def new_campaign():
         return redirect(url_for('main.dashboard'))
     return render_template('create_campaign.html', title='New Campaign', form=form)
 
+@main.route('/campaign/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_campaign(id):
+    campaign = Campaign.query.get_or_404(id)
+    
+    # Check if the current user is the owner of the campaign
+    if campaign.user_id != current_user.id:
+        flash('You do not have permission to edit this campaign.', 'danger')
+        return redirect(url_for('main.dashboard'))
+    
+    form = CampaignForm(obj=campaign)
+    
+    if form.validate_on_submit():
+        campaign.name = form.name.data
+        campaign.description = form.description.data
+        campaign.budget = form.budget.data
+        campaign.visibility = form.visibility.data
+        db.session.commit()
+        flash('Your campaign has been edited!', 'success')
+        return redirect(url_for('main.dashboard'))
+    
+    return render_template('edit_campaign.html', title='Edit Campaign', form=form, campaign=campaign)
+
 @main.route('/ad_request/new/<int:campaign_id>', methods=['GET', 'POST'])
 @login_required
 def new_ad_request(campaign_id):

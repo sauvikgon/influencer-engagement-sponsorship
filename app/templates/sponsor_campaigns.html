@@ -4,9 +4,55 @@
 <a href="{{ url_for('main.new_campaign') }}" class="btn btn-primary">Create New Campaign</a>
 <ul>
     {% for campaign in campaigns %}
-    <li>{{ campaign.name }} - {{ campaign.description }}
-        <a href="{{ url_for('main.new_ad_request', campaign_id=campaign.id) }}" class="btn btn-secondary">Create Ad Request</a>
-    </li>
+
+    <div class="col-md-4">
+        <div class="request-box card">
+            <div class="card-body">
+                <h4 class="card-title">{{ campaign.name }}</h4>
+                <p class="card-text">{{ campaign.details }}</p>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
+                <a href="{{ url_for('main.edit_campaign', id=campaign.id) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ url_for('main.new_ad_request', campaign_id=campaign.id) }}" class="btn btn-success">Create Ad Request</a>
+            </div>
+        </div>
+    </div>
     {% endfor %}
 </ul>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="campaignModal" tabindex="-1" role="dialog" aria-labelledby="campaignModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="campaignModalLabel">Campaign Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Campaign details will be loaded here dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    $('#campaignModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var campaignId = button.data('id');
+
+        var modal = $(this);
+        modal.find('.modal-body').load('/campaign_details/' + campaignId);
+    });
+});
+</script>
+
+
+
 {% endblock %}

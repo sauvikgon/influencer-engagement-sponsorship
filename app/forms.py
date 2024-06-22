@@ -40,6 +40,13 @@ class CampaignForm(FlaskForm):
     visibility = SelectField('Visibility', choices=[('public', 'Public'), ('private', 'Private')], validators=[DataRequired()])
     submit = SubmitField('Create Campaign')
 
+class CampaignEditForm(FlaskForm):
+    name = StringField('Campaign Name', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    budget = FloatField('Budget', validators=[DataRequired()])
+    visibility = SelectField('Visibility', choices=[('public', 'Public'), ('private', 'Private')], validators=[DataRequired()])
+    submit = SubmitField('Save Changes')
+
 class AdRequestForm(FlaskForm):
     requirements = TextAreaField('Requirements', validators=[DataRequired()])
     influencer = TextAreaField('Influencer', validators=[DataRequired()])
