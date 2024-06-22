@@ -4,4 +4,11 @@
     <p><strong>Start Date:</strong> {{ campaign.start_date }}</p>
     <p><strong>End Date:</strong> {{ campaign.end_date }}</p>
     <!-- Add more campaign details as needed -->
+    
+    <h5>Ads Associated with this Campaign:</h5>
+    <ul>
+        {% for ad in ads %}
+            <li>{{ ad.id }} - {{ ad.requirements }}</li>
+        {% endfor %}
+    </ul>
 </div>

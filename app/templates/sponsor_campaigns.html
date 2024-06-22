@@ -4,7 +4,6 @@
 <a href="{{ url_for('main.new_campaign') }}" class="btn btn-primary">Create New Campaign</a>
 <ul>
     {% for campaign in campaigns %}
-
     <div class="col-md-4">
         <div class="request-box card">
             <div class="card-body">
@@ -18,8 +17,6 @@
     </div>
     {% endfor %}
 </ul>
-
-
 
 <!-- Modal -->
 <div class="modal fade" id="campaignModal" tabindex="-1" role="dialog" aria-labelledby="campaignModalLabel" aria-hidden="true">
@@ -52,7 +49,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-
-
 {% endblock %}

@@ -256,12 +256,21 @@ def update_profile_pic():
             db.session.commit()
     return redirect(url_for('main.influencer_profile'))
 
-@main.route('/campaign_details/<int:id>')
+@main.route('/campaign_details/<int:campaign_id>', methods=['GET'])
 @login_required
-def view_campaign(id):
-    # Implement the logic to view campaign details
-    campaign = Campaign.query.get_or_404(id)
-    return render_template('campaign_details.html', campaign=campaign)
+def campaign_details(campaign_id):
+    campaign = Campaign.query.get_or_404(campaign_id)
+    
+    # # Ensure the user has permission to view this campaign
+    # if campaign.user_id != current_user.id:
+    #     abort(403)
+    
+    if current_user.role == "influencer":
+        ads = AdRequest.query.filter_by(campaign_id=campaign.id, influencer_id = current_user.id).all()
+    elif current_user.role == "sponsor":
+        ads = AdRequest.query.filter_by(campaign_id=campaign.id).all()
+    return render_template('campaign_details.html', campaign=campaign, ads=ads)
+
 
 @main.route('/accept_request/<int:id>')
 @login_required
