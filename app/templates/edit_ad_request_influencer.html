@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Edit Ad Request{% endblock %}
+{% block content %}
+<h2>Edit Ad Request</h2>
+<form method="POST" action="{{ url_for('main.edit_ad_request_infl', id=adrequest.id) }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.payment_amount.label(class="form-control-label") }}
+        {{ form.payment_amount(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% endblock %}

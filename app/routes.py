@@ -130,12 +130,36 @@ def edit_campaign(id):
 def new_ad_request(campaign_id):
     form = AdRequestForm()
     if form.validate_on_submit():
-        ad_request = AdRequest(campaign_id=campaign_id, influencer_id=form.influencer.data, requirements=form.requirements.data, payment_amount=form.payment_amount.data, status_influencer='Pending', status_sponsor='Accepted')
+        ad_request = AdRequest(campaign_id=campaign_id, influencer_id=form.influencer_id.data, requirements=form.requirements.data, payment_amount=form.payment_amount.data, status_influencer='Pending', status_sponsor='Accepted')
         db.session.add(ad_request)
         db.session.commit()
         flash('Your ad request has been created!', 'success')
         return redirect(url_for('main.dashboard'))
     return render_template('create_ad_request.html', title='New Ad Request', form=form, campaign_id=campaign_id)
+
+@main.route('/ad_request_spon/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_ad_request_spon(id):
+    adrequest = AdRequest.query.get_or_404(id)
+    campaign = Campaign.query.get_or_404(adrequest.campaign_id)
+    
+    # Check if the current user is the owner of the campaign
+    if campaign.user_id != current_user.id:
+        flash('You do not have permission to edit this ad request.', 'danger')
+        return redirect(url_for('main.dashboard'))
+    
+    form = AdRequestForm(obj=adrequest)
+    
+    if form.validate_on_submit():
+        adrequest.requirements = form.requirements.data
+        adrequest.payment_amount = form.payment_amount.data
+        db.session.commit()
+        flash('Your Ad Request has been edited!', 'success')
+        return redirect(url_for('main.dashboard'))
+    else:
+        print(form.errors)  # Debug print for form errors
+    
+    return render_template('edit_ad_request_sponsor.html', title='Edit Ad Request', form=form, adrequest=adrequest)
 
 @main.route('/new_ad_request/new/<int:campaign_id>/<int:influencer_id>', methods=['GET', 'POST'])
 @login_required
@@ -158,6 +182,29 @@ def new_ad_request_infl(campaign_id, influencer_id):
         return redirect(url_for('main.influencer_profile'))
     return render_template('create_ad_request_influencer.html', title='Request New Ad', form=form, campaign_id=campaign_id, influencer_id=influencer_id)
 
+@main.route('/ad_request_infl/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_ad_request_infl(id):
+    adrequest = AdRequest.query.get_or_404(id)
+    
+    # Check if the current user is the owner of the ad request
+    if adrequest.influencer_id != current_user.id:
+        flash('You do not have permission to edit this ad request.', 'danger')
+        return redirect(url_for('main.dashboard'))
+    
+    form = AdRequestForm(obj=adrequest)
+    
+    if form.validate_on_submit():
+        # adrequest.influencer_id = form.influencer_id.data
+        adrequest.payment_amount = form.payment_amount.data
+        db.session.commit()
+        flash('Your Ad Request has been edited!', 'success')
+        return redirect(url_for('main.dashboard'))
+    else:
+        print(form.errors)  # Debug print for form errors
+    
+    return render_template('edit_ad_request_influencer.html', title='Edit Ad Request', form=form, adrequest=adrequest)
+
 @main.route('/sponsor/profile')
 @login_required
 def sponsor_profile():
@@ -170,11 +217,14 @@ def sponsor_profile():
     .filter(Campaign.user_id == sponsor.id, AdRequest.status_sponsor == "Accepted").all()
     new_requests = AdRequest.query.join(Campaign, AdRequest.campaign_id == Campaign.id)\
                               .filter(Campaign.user_id == sponsor.id, AdRequest.status_sponsor == 'Pending').all()
+    influencer_pending_request = AdRequest.query.join(Campaign, AdRequest.campaign_id == Campaign.id)\
+                              .filter(Campaign.user_id == sponsor.id, AdRequest.status_influencer == 'Pending').all()
 
     return render_template('sponsor_profile.html',
                            sponsor=sponsor,
                            active_campaigns=active_campaigns,
-                           new_requests=new_requests)
+                           new_requests=new_requests,
+                           influencer_pending_request=influencer_pending_request)
 
 # # There was a error with code. So we had to modify it below
 # @main.route('/sponsor/campaigns')
@@ -238,11 +288,13 @@ def influencer_profile():
     active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id)\
     .filter(AdRequest.status_influencer == 'Accepted', AdRequest.influencer_id == influencer.id).all()
     new_requests = AdRequest.query.filter_by(influencer_id=influencer.id, status_influencer='Pending').all()
+    sponsor_pending_request = AdRequest.query.filter_by(influencer_id=influencer.id, status_sponsor='Pending').all()
 
     return render_template('influencer_profile.html',
                            influencer=influencer,
                            active_campaigns=active_campaigns,
-                           new_requests=new_requests)
+                           new_requests=new_requests,
+                           sponsor_pending_request=sponsor_pending_request)
 
 @main.route('/update_profile_pic', methods=['POST'])
 def update_profile_pic():
