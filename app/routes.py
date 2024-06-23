@@ -95,7 +95,7 @@ def dashboard():
 def new_campaign():
     form = CampaignForm()
     if form.validate_on_submit():
-        campaign = Campaign(name=form.name.data, description=form.description.data, budget=form.budget.data, visibility=form.visibility.data, user_id=current_user.id)
+        campaign = Campaign(name=form.name.data, description=form.description.data, budget=form.budget.data, visibility=form.visibility.data, start_date=form.start_date.data, end_date=form.end_date.data, user_id=current_user.id)
         db.session.add(campaign)
         db.session.commit()
         flash('Your campaign has been created!', 'success')
@@ -129,13 +129,26 @@ def edit_campaign(id):
 @login_required
 def new_ad_request(campaign_id):
     form = AdRequestForm()
+    
+     # Fetch influencers and set choices for the SelectField
+    influencers = [(influencer.id, influencer.username) for influencer in User.query.filter_by(role='influencer').all()]
+    form.influencer_id.choices = influencers
+
     if form.validate_on_submit():
-        ad_request = AdRequest(campaign_id=campaign_id, influencer_id=form.influencer_id.data, requirements=form.requirements.data, payment_amount=form.payment_amount.data, status_influencer='Pending', status_sponsor='Accepted')
+        ad_request = AdRequest(
+            requirements=form.requirements.data,
+            influencer_id=form.influencer_id.data,
+            payment_amount=form.payment_amount.data,
+            campaign_id=campaign_id,
+            status_sponsor='Accepted',
+            status_influencer='Pending'
+        )
         db.session.add(ad_request)
         db.session.commit()
-        flash('Your ad request has been created!', 'success')
+        flash('Ad Request created successfully!', 'success')
         return redirect(url_for('main.dashboard'))
-    return render_template('create_ad_request.html', title='New Ad Request', form=form, campaign_id=campaign_id)
+    
+    return render_template('create_ad_request.html', title='Create Ad Request', form=form, campaign_id=campaign_id)
 
 @main.route('/ad_request_spon/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -167,8 +180,15 @@ def edit_ad_request_spon(id):
 @login_required
 def new_ad_request_infl(campaign_id, influencer_id):
     form = AdRequestForm()
+
+    # Set the influencer_id choices
+    form.influencer_id.choices = [(influencer.id, influencer.username) for influencer in User.query.filter_by(role='influencer').all()]
+
     if request.method == 'POST':
-        form.influencer.data = influencer_id
+        form.influencer_id.data = influencer_id
+
+    if request.method == 'POST':
+        form.influencer_id.data = influencer_id
     if form.validate_on_submit():
         ad_request = AdRequest(
             campaign_id=campaign_id,
@@ -291,7 +311,12 @@ def influencer_profile():
     # active_campaigns = Campaign.query.filter_by(visibility='public').all()
     active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id)\
     .filter(AdRequest.status_influencer == 'Accepted', AdRequest.influencer_id == influencer.id).all()
-    new_requests = AdRequest.query.filter_by(influencer_id=influencer.id, status_influencer='Pending').all()
+    public_influencer = User.query.filter_by(username='Public').first()
+    new_requests = AdRequest.query.filter(
+        (AdRequest.influencer_id == public_influencer.id) | 
+        (AdRequest.influencer_id == influencer.id),
+        AdRequest.status_influencer == 'Pending'
+    ).all()
     sponsor_pending_request = AdRequest.query.filter_by(influencer_id=influencer.id, status_sponsor='Pending').all()
 
     return render_template('influencer_profile.html',

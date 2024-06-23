@@ -1,6 +1,7 @@
 from app import db, login_manager
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import date
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -26,7 +27,8 @@ class User(UserMixin, db.Model):
     category = db.Column(db.String(120))  # For Influencers
     niche = db.Column(db.String(120))  # For Influencers
     profile_pic = db.Column(db.String(20), nullable=False, default='download.png')
-
+    flag = db.Column(db.Boolean, default=False, nullable=False)  # Add flag column
+    
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -39,8 +41,11 @@ class Campaign(db.Model):
     description = db.Column(db.Text, nullable=False)
     budget = db.Column(db.Float, nullable=False)
     visibility = db.Column(db.String(10), nullable=False)  # 'public', 'private'
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     ad_requests = db.relationship('AdRequest', backref='campaign', lazy=True)
+    flag = db.Column(db.Boolean, default=False, nullable=False)  # Add flag column
 
 class AdRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
