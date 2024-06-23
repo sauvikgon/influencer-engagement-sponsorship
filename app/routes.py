@@ -252,6 +252,24 @@ def edit_ad_request_infl(id):
     
     return render_template('edit_ad_request_influencer.html', title='Edit Ad Request', form=form, adrequest=adrequest)
 
+@main.route('/ad_request/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_ad_request(id):
+    ad_request = AdRequest.query.get_or_404(id)
+    campaign = Campaign.query.get_or_404(ad_request.campaign_id)
+
+    # Check if the current user is the owner of the campaign
+    if campaign.user_id != current_user.id:
+        flash('You do not have permission to edit this ad request.', 'danger')
+        return redirect(url_for('main.dashboard'))
+
+    # Delete the ad request
+    db.session.delete(ad_request)
+    db.session.commit()
+
+    flash('Your ad request has been deleted!', 'success')
+    return redirect(url_for('main.dashboard'))
+
 @main.route('/sponsor/profile')
 @login_required
 def sponsor_profile():
