@@ -375,6 +375,11 @@ def campaign_details(campaign_id):
         ads = AdRequest.query.filter_by(campaign_id=campaign.id).all()
     return render_template('campaign_details.html', campaign=campaign, ads=ads)
 
+@main.route('/ad_request_details/<int:ad_request_id>', methods=['GET'])
+@login_required
+def ad_request_details(ad_request_id):
+    ad_request = AdRequest.query.get_or_404(ad_request_id)
+    return render_template('ad_request_details.html', ad_request=ad_request)
 
 @main.route('/accept_request/<int:id>')
 @login_required

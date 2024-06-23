@@ -1,16 +1,12 @@
 {% extends "sponsor_dashboard.html" %}
 {% block tab_content %}
 <h2>Profile</h2>
-<!-- <p>Company Name: {{ current_user.username }}</p>
-<p>Industry: {{ current_user.industry }}</p>
-<p>Budget: {{ current_user.budget }}</p> -->
 <div class="col-md-9">
     <div class="profile-main">
         <h2>Welcome, {{ current_user.username }}!</h2>
         <h3>Active Campaigns</h3>
         <ul>
             {% for campaign in active_campaigns %}
-            <!-- <li>{{ campaign.name }} (Ends: {{ campaign.end_date }})</li> -->
             <div class="col-md-4">
                 <div class="request-box card">
                     <div class="card-body">
@@ -22,15 +18,17 @@
             </div>
             {% endfor %}
         </ul>
-        <h3>New Requests(Pending)</h3>
+        
+        <h3>New Requests (Pending)</h3>
         <div class="row">
             {% for request in new_requests %}
             <div class="col-md-4">
                 <div class="request-box card">
                     <div class="card-body">
-                        <h4 class="card-title">{{ request.campaign.name }}</h4>
-                        <p class="card-text">{{ request.details }}</p>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ request.campaign.id }}">View</button>
+                        <h4 class="card-title">{{ request.requirements }}</h4>
+                        <p class="card-text">Campaign: {{ request.campaign.name }}</p>
+                        <p class="card-text">Payment: {{ request.payment_amount }}</p>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
                         <a href="{{ url_for('main.accept_request_sponsor', id=request.id) }}" class="btn btn-success">Accept</a>
                         <a href="{{ url_for('main.edit_ad_request_spon', id=request.id) }}" class="btn btn-warning">Edit</a>
                         <a href="{{ url_for('main.reject_request_sponsor', id=request.id) }}" class="btn btn-danger">Reject</a>
@@ -39,15 +37,17 @@
             </div>
             {% endfor %}
         </div>
-        <h3>Ad Requests(Pending for influencer acceptance)</h3>
+
+        <h3>Ad Requests (Pending for influencer acceptance)</h3>
         <div class="row">
             {% for request in influencer_pending_request %}
             <div class="col-md-4">
                 <div class="request-box card">
                     <div class="card-body">
-                        <h4 class="card-title">{{ request.campaign.name }}</h4>
-                        <p class="card-text">{{ request.details }}</p>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ request.campaign.id }}">View</button>
+                        <h4 class="card-title">{{ request.requirements }}</h4>
+                        <p class="card-text">Campaign: {{ request.campaign.name }}</p>
+                        <p class="card-text">Payment: {{ request.payment_amount }}</p>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
                         <a href="{{ url_for('main.edit_ad_request_spon', id=request.id) }}" class="btn btn-success">Edit</a>
                         <a href="{{ url_for('main.reject_request_sponsor', id=request.id) }}" class="btn btn-danger">Reject</a>
                     </div>
@@ -58,7 +58,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Campaign Modal -->
 <div class="modal fade" id="campaignModal" tabindex="-1" role="dialog" aria-labelledby="campaignModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -78,14 +78,48 @@
     </div>
 </div>
 
+<!-- AdRequest Modal -->
+<div class="modal fade" id="adRequestModal" tabindex="-1" role="dialog" aria-labelledby="adRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adRequestModalLabel">Ad Request Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Ad request details will be loaded here dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     $('#campaignModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var campaignId = button.data('id');
 
+        // Hide the adrequest modal when opening the campaign modal
+        $('#adRequestModal').modal('hide');
+
         var modal = $(this);
         modal.find('.modal-body').load('/campaign_details/' + campaignId);
+    });
+
+    $('#adRequestModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var adRequestId = button.data('id');
+
+        // Hide the campaign modal when opening the ad request modal
+        $('#campaignModal').modal('hide');
+
+        var modal = $(this);
+        modal.find('.modal-body').load('/ad_request_details/' + adRequestId);
     });
 });
 </script>
