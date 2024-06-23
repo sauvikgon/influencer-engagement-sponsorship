@@ -102,6 +102,18 @@ def new_campaign():
         return redirect(url_for('main.dashboard'))
     return render_template('create_campaign.html', title='New Campaign', form=form)
 
+@main.route('/campaign/flag/<int:id>', methods=['POST'])
+@login_required
+def flag_campaign(id):
+    campaign = Campaign.query.get_or_404(id)
+    
+    # Update the flag field
+    campaign.flag = True
+    db.session.commit()
+    
+    flash('The campaign has been flagged!', 'success')
+    return redirect(url_for('main.admin_info'))
+
 @main.route('/campaign/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_campaign(id):
