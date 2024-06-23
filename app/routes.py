@@ -119,6 +119,9 @@ def edit_campaign(id):
         campaign.description = form.description.data
         campaign.budget = form.budget.data
         campaign.visibility = form.visibility.data
+        campaign.start_date = form.start_date.data
+        campaign.end_date = form.end_date.data
+
         db.session.commit()
         flash('Your campaign has been edited!', 'success')
         return redirect(url_for('main.dashboard'))
