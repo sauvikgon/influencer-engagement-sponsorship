@@ -102,6 +102,26 @@ def new_campaign():
         return redirect(url_for('main.dashboard'))
     return render_template('create_campaign.html', title='New Campaign', form=form)
 
+@main.route('/campaign/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_campaign(id):
+    campaign = Campaign.query.get_or_404(id)
+
+    # Check if the current user is the owner of the campaign
+    if campaign.user_id != current_user.id:
+        flash('You do not have permission to delete this campaign.', 'danger')
+        return redirect(url_for('main.dashboard'))
+
+    # Delete all ad requests associated with the campaign
+    AdRequest.query.filter_by(campaign_id=id).delete()
+
+    # Delete the campaign
+    db.session.delete(campaign)
+    db.session.commit()
+    
+    flash('Your campaign and all associated ad requests have been deleted!', 'success')
+    return redirect(url_for('main.dashboard'))
+
 @main.route('/campaign/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_campaign(id):

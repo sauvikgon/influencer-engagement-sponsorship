@@ -12,6 +12,7 @@
                 <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
                 <a href="{{ url_for('main.edit_campaign', id=campaign.id) }}" class="btn btn-warning">Edit</a>
                 <a href="{{ url_for('main.new_ad_request', campaign_id=campaign.id) }}" class="btn btn-success">Create Ad Request</a>
+                <a href="{{ url_for('main.delete_campaign', id=campaign.id) }}" class="btn btn-danger">DELETE</a>
             </div>
         </div>
     </div>
