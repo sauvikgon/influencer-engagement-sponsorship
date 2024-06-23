@@ -153,6 +153,8 @@ def edit_ad_request_spon(id):
     if form.validate_on_submit():
         adrequest.requirements = form.requirements.data
         adrequest.payment_amount = form.payment_amount.data
+        adrequest.status_sponsor = 'Accepted'
+        adrequest.status_influencer = 'Pending'
         db.session.commit()
         flash('Your Ad Request has been edited!', 'success')
         return redirect(url_for('main.dashboard'))
@@ -197,6 +199,8 @@ def edit_ad_request_infl(id):
     if form.validate_on_submit():
         # adrequest.influencer_id = form.influencer_id.data
         adrequest.payment_amount = form.payment_amount.data
+        adrequest.status_sponsor = 'Pending'
+        adrequest.status_influencer = 'Accepted'
         db.session.commit()
         flash('Your Ad Request has been edited!', 'success')
         return redirect(url_for('main.dashboard'))

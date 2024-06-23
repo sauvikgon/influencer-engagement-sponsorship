@@ -43,6 +43,7 @@
                             <p class="card-text">{{ request.details }}</p>
                             <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ request.campaign.id }}">View</button>
                             <a href="{{ url_for('main.accept_request_influencer', id=request.id) }}" class="btn btn-success">Accept</a>
+                            <a href="{{ url_for('main.edit_ad_request_infl', id=request.id) }}" class="btn btn-warning">Edit</a>
                             <a href="{{ url_for('main.reject_request_influencer', id=request.id) }}" class="btn btn-danger">Reject</a>
                         </div>
                     </div>
