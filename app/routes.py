@@ -4,6 +4,7 @@ from app import db
 from app.models import User, Campaign, AdRequest
 # from app.forms import RegistrationForm, LoginForm, CampaignForm, AdRequestForm
 from app.forms import SponsorRegistrationForm, InfluencerRegistrationForm, LoginForm, CampaignForm, AdRequestForm
+from sqlalchemy import or_
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 import os
@@ -144,6 +145,10 @@ def edit_campaign(id):
         flash('You do not have permission to edit this campaign.', 'danger')
         return redirect(url_for('main.dashboard'))
     
+    if campaign.flag == True:
+        flash('This Campaign is flagged')
+        return redirect(url_for('main.dashboard'))
+
     form = CampaignForm(obj=campaign)
     
     if form.validate_on_submit():
@@ -164,8 +169,13 @@ def edit_campaign(id):
 @login_required
 def new_ad_request(campaign_id):
     form = AdRequestForm()
-    
-     # Fetch influencers and set choices for the SelectField
+    campaign = Campaign.query.get_or_404(campaign_id)
+
+    if campaign.flag == True:
+        flash('This Campaign is flagged')
+        return redirect(url_for('main.dashboard'))
+
+    # Fetch influencers and set choices for the SelectField
     influencers = [(influencer.id, influencer.username) for influencer in User.query.filter_by(role='influencer').all()]
     form.influencer_id.choices = influencers
 
@@ -190,6 +200,10 @@ def new_ad_request(campaign_id):
 def edit_ad_request_spon(id):
     adrequest = AdRequest.query.get_or_404(id)
     campaign = Campaign.query.get_or_404(adrequest.campaign_id)
+
+    if campaign.flag == True:
+        flash('This Campaign is flagged')
+        return redirect(url_for('main.dashboard'))
     
     # Check if the current user is the owner of the campaign
     if campaign.user_id != current_user.id:
@@ -215,6 +229,11 @@ def edit_ad_request_spon(id):
 @login_required
 def new_ad_request_infl(campaign_id, influencer_id):
     form = AdRequestForm()
+    campaign = Campaign.query.get_or_404(campaign_id)
+
+    if campaign.flag == True:
+        flash('This Campaign is flagged')
+        return redirect(url_for('main.dashboard'))
 
     # Set the influencer_id choices
     form.influencer_id.choices = [(influencer.id, influencer.username) for influencer in User.query.filter_by(role='influencer').all()]
@@ -243,6 +262,11 @@ def new_ad_request_infl(campaign_id, influencer_id):
 @login_required
 def edit_ad_request_infl(id):
     adrequest = AdRequest.query.get_or_404(id)
+    campaign = Campaign.query.get_or_404(adrequest.campaign_id)
+
+    if campaign.flag == True:
+        flash('This Campaign is flagged')
+        return redirect(url_for('main.dashboard'))
     
     # Check if the current user is the owner of the ad request
     if adrequest.influencer_id != current_user.id:
@@ -275,6 +299,10 @@ def delete_ad_request(id):
         flash('You do not have permission to edit this ad request.', 'danger')
         return redirect(url_for('main.dashboard'))
 
+    if campaign.flag == True:
+        flash('This Campaign is flagged')
+        return redirect(url_for('main.dashboard'))
+    
     # Delete the ad request
     db.session.delete(ad_request)
     db.session.commit()
@@ -361,10 +389,11 @@ def influencer_profile():
         return redirect(url_for('main.home'))
 
     influencer = current_user
+    public_influencer = User.query.filter_by(username='Public').first()
     # active_campaigns = Campaign.query.filter_by(visibility='public').all()
     active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id)\
-    .filter(AdRequest.status_influencer == 'Accepted', AdRequest.influencer_id == influencer.id).all()
-    public_influencer = User.query.filter_by(username='Public').first()
+    .filter(AdRequest.status_influencer == 'Accepted', ((AdRequest.influencer_id == influencer.id) | (AdRequest.influencer_id == public_influencer.id))).all()
+    print(active_campaigns)
     new_requests = AdRequest.query.filter(
         (AdRequest.influencer_id == public_influencer.id) | 
         (AdRequest.influencer_id == influencer.id),
@@ -394,15 +423,25 @@ def update_profile_pic():
 @login_required
 def campaign_details(campaign_id):
     campaign = Campaign.query.get_or_404(campaign_id)
+    public_influencer = User.query.filter_by(username='Public').first()
     
     # # Ensure the user has permission to view this campaign
     # if campaign.user_id != current_user.id:
     #     abort(403)
     
     if current_user.role == "influencer":
-        ads = AdRequest.query.filter_by(campaign_id=campaign.id, influencer_id = current_user.id).all()
+        ads = AdRequest.query.filter(
+            AdRequest.campaign_id == campaign.id,
+            or_(
+                AdRequest.influencer_id == current_user.id,
+                AdRequest.influencer_id == public_influencer.id
+            )
+        ).all()
     elif current_user.role == "sponsor":
         ads = AdRequest.query.filter_by(campaign_id=campaign.id).all()
+    elif current_user.role == "admin":
+	    ads = AdRequest.query.filter_by(campaign_id=campaign.id).all()
+        
     return render_template('campaign_details.html', campaign=campaign, ads=ads)
 
 @main.route('/ad_request_details/<int:ad_request_id>', methods=['GET'])

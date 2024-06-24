@@ -15,11 +15,16 @@
             <div class="card-body">
                 <h4 class="card-title">{{ campaign.name }}</h4>
                 <p class="card-text">{{ campaign.details }}</p>
+                {% if campaign.flag == 1 %}
+                    <p class="text-danger">This Campaign is already flagged</p>
+                {% endif %}
                 <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
                 <!-- Add form to flag campaign -->
-                <form method="POST" action="{{ url_for('main.flag_campaign', id=campaign.id) }}">
-                    <button type="submit" class="btn btn-danger">Flag</button>
-                </form>
+                {% if campaign.flag == 0 %}
+                    <form method="POST" action="{{ url_for('main.flag_campaign', id=campaign.id) }}">
+                        <button type="submit" class="btn btn-danger">Flag</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -36,6 +41,9 @@
                 <h4 class="card-title">{{ request.requirements }}</h4>
                 <p class="card-text">Campaign: {{ request.campaign.name }}</p>
                 <p class="card-text">Payment: {{ request.payment_amount }}</p>
+                {% if request.campaign.flag == 1 %}
+                    <p class="text-danger">The campaign associated with this ad request is flagged</p>
+                {% endif %}
                 <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
                 <!-- <a href="{{ url_for('main.edit_ad_request_infl', id=request.id) }}" class="btn btn-success">Edit</a> -->
                 <!-- <a href="{{ url_for('main.reject_request_influencer', id=request.id) }}" class="btn btn-danger">Reject</a> -->

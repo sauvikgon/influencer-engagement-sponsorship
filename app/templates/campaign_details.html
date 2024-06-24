@@ -3,6 +3,9 @@
     <p><strong>Description:</strong> {{ campaign.description }}</p>
     <p><strong>Start Date:</strong> {{ campaign.start_date }}</p>
     <p><strong>End Date:</strong> {{ campaign.end_date }}</p>
+    {% if campaign.flag == 1 %}
+        <p class="text-danger">This Campaign is flagged</p>
+    {% endif %}
     <!-- Add more campaign details as needed -->
     
     <h5>Ads Associated with this Campaign:</h5>

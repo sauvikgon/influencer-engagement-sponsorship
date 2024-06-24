@@ -1,5 +1,8 @@
 <h5>{{ ad_request.requirements }}</h5>
 <!-- <p>Campaign: {{ ad_request.campaign.name }}</p> -->
+{% if ad_request.campaign.flag == 1 %}
+    <p class="text-danger">The campaign associated with this ad request is flagged</p>
+{% endif %}
 <p>Campaign: <a href="#" data-toggle="modal" data-target="#campaignModal" data-campaign-id="{{ ad_request.campaign_id }}">{{ ad_request.campaign.name }}</a></p>
 <p>Payment Amount: {{ ad_request.payment_amount }}</p>
 <p>Sponsor Status: {{ ad_request.status_sponsor }}</p>
