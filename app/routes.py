@@ -7,6 +7,7 @@ from app.forms import SponsorRegistrationForm, InfluencerRegistrationForm, Login
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
+from functools import wraps
 import os
 
 main = Blueprint('main', __name__)
@@ -34,6 +35,15 @@ def home():
 #         flash('Your account has been created! You are now able to log in', 'success')
 #         return redirect(url_for('main.login'))
 #     return render_template('register.html', title='Register', form=form)
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.role == "admin":  # Assuming `is_admin` is a property of your user model
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('main.index'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @main.route('/register/sponsor', methods=['GET', 'POST'])
 def register_sponsor():
@@ -105,6 +115,7 @@ def new_campaign():
 
 @main.route('/campaign/flag/<int:id>', methods=['POST'])
 @login_required
+@admin_required
 def flag_campaign(id):
     campaign = Campaign.query.get_or_404(id)
     
@@ -113,6 +124,45 @@ def flag_campaign(id):
     db.session.commit()
     
     flash('The campaign has been flagged!', 'success')
+    return redirect(url_for('main.admin_info'))
+
+@main.route('/campaign/unflag/<int:id>', methods=['POST'])
+@login_required
+@admin_required
+def unflag_campaign(id):
+    campaign = Campaign.query.get_or_404(id)
+    
+    # Update the flag field
+    campaign.flag = False
+    db.session.commit()
+    
+    flash('The campaign has been unflagged!', 'success')
+    return redirect(url_for('main.admin_info'))
+
+@main.route('/user/flag/<int:id>', methods=['POST'])
+@login_required
+@admin_required
+def flag_user(id):
+    user = User.query.get_or_404(id)
+    
+    # Update the flag field
+    user.flag = True
+    db.session.commit()
+    
+    flash('The user has been flagged!', 'success')
+    return redirect(url_for('main.admin_info'))
+
+@main.route('/user/unflag/<int:id>', methods=['POST'])
+@login_required
+@admin_required
+def unflag_user(id):
+    user = User.query.get_or_404(id)
+    
+    # Update the flag field
+    user.flag = False
+    db.session.commit()
+    
+    flash('The user has been unflagged!', 'success')
     return redirect(url_for('main.admin_info'))
 
 @main.route('/campaign/delete/<int:id>', methods=['GET', 'POST'])
