@@ -19,7 +19,7 @@
                     <p class="text-danger">This Campaign is flagged</p>
                 {% endif %}
                 <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
-                {% if campaign.flag == 0 %}
+                {% if campaign.flag == 0 and current_user.flag == 0 %}
                     <a href="{{ url_for('main.new_ad_request_infl', campaign_id=campaign.id, influencer_id=influencer.id) }}" class="btn btn-success">Request</a>
                 {% endif %}
             </div>

@@ -226,7 +226,7 @@ def new_ad_request(campaign_id):
         return redirect(url_for('main.dashboard'))
 
     # Fetch influencers and set choices for the SelectField
-    influencers = [(influencer.id, influencer.username) for influencer in User.query.filter_by(role='influencer').all()]
+    influencers = [(influencer.id, influencer.username) for influencer in User.query.filter_by(role='influencer', flag=0).all()]
     form.influencer_id.choices = influencers
 
     if form.validate_on_submit():

@@ -15,6 +15,9 @@
         <div class="request-box card">
             <div class="card-body">
                 <h4 class="card-title">{{ influencer.username }}</h4>
+                {% if influencer.flag == 1 %}
+                    <p class="text-danger">This User is flagged by a Admin</p>
+                {% endif %}
                 <!-- <p class="card-text">{{ influencer.platforms }}</p> -->
                 <button class="btn btn-primary" data-toggle="modal" data-target="#influencerModal" data-id="{{ influencer.id }}">View</button>
             </div>

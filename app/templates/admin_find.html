@@ -15,6 +15,9 @@
                 <div class="card-body">
                     <h4 class="card-title">{{ user.username }}</h4>
                     
+                    {% if user.flag == 1 %}
+                        <p class="text-danger">This User is flagged by a Admin</p>
+                    {% endif %}
                     {% if user.role == 'influencer' %}
                     <button class="btn btn-primary" data-toggle="modal" data-target="#influencerModal" data-id="{{ user.id }}">View</button>
                     {% elif user.role == 'admin' %}
@@ -47,7 +50,6 @@
                 <div class="card-body">
                     <h4 class="card-title">{{ campaign.name }}</h4>
                     <p class="card-text">{{ campaign.details }}</p>
-                    <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button> -->
                     {% if campaign.flag == 1 %}
                         <p class="text-danger">This Campaign is flagged</p>
                         <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
@@ -64,6 +66,7 @@
         {% endfor %}
     </div>
 </div>
+
 
 
 

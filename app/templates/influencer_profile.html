@@ -18,6 +18,9 @@
     <div class="col-md-9">
         <div class="profile-main">
             <h2>Welcome, {{ current_user.username }}!</h2>
+            {% if current_user.flag == 1 %}
+                <h1><p class="text-danger">You are flagged by a Admin</p></h1>
+            {% endif %}
             <h3>Active Campaigns</h3>
             <ul>
                 {% for campaign in active_campaigns %}
@@ -48,7 +51,7 @@
                                 <p class="text-danger">The campaign associated with this ad request is flagged</p>
                             {% endif %}
                             <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
-                            {% if request.campaign.flag == 0 %}
+                            {% if request.campaign.flag == 0 and current_user.flag == 0 %}
                                 <a href="{{ url_for('main.accept_request_influencer', id=request.id) }}" class="btn btn-success">Accept</a>
                                 <a href="{{ url_for('main.edit_ad_request_infl', id=request.id) }}" class="btn btn-warning">Edit</a>
                                 <a href="{{ url_for('main.reject_request_influencer', id=request.id) }}" class="btn btn-danger">Reject</a>
@@ -71,7 +74,7 @@
                                 <p class="text-danger">The campaign associated with this ad request is flagged</p>
                             {% endif %}
                             <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
-                            {% if request.campaign.flag == 0 %}
+                            {% if request.campaign.flag == 0 and current_user.flag == 0 %}
                                 <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button> -->
                                 <a href="{{ url_for('main.edit_ad_request_infl', id=request.id) }}" class="btn btn-success">Edit</a>
                                 <a href="{{ url_for('main.reject_request_influencer', id=request.id) }}" class="btn btn-danger">Reject</a>
