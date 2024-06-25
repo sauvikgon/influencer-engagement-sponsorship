@@ -366,6 +366,22 @@ def view_influencer(id):
     # print(id)
     return render_template('influencer_details.html', user=influencer)
 
+@main.route('/sponsor_details/<int:id>')
+@login_required
+def view_sponsor(id):
+    # Implement the logic to view campaign details
+    sponsor = User.query.get_or_404(id)
+    # print(id)
+    return render_template('sponsor_details.html', user=sponsor)
+
+@main.route('/admin_details/<int:id>')
+@login_required
+def view_admin(id):
+    # Implement the logic to view campaign details
+    admin = User.query.get_or_404(id)
+    # print(id)
+    return render_template('admin_details.html', user=admin)
+
 @main.route('/sponsor/stats')
 @login_required
 def sponsor_stats():
@@ -422,6 +438,7 @@ def update_profile_pic():
 @main.route('/campaign_details/<int:campaign_id>', methods=['GET'])
 @login_required
 def campaign_details(campaign_id):
+    print(campaign_id)
     campaign = Campaign.query.get_or_404(campaign_id)
     public_influencer = User.query.filter_by(username='Public').first()
     
@@ -439,8 +456,10 @@ def campaign_details(campaign_id):
         ).all()
     elif current_user.role == "sponsor":
         ads = AdRequest.query.filter_by(campaign_id=campaign.id).all()
+    
     elif current_user.role == "admin":
-	    ads = AdRequest.query.filter_by(campaign_id=campaign.id).all()
+        ads = AdRequest.query.filter_by(campaign_id=campaign.id).all()
+        # print(ads)
         
     return render_template('campaign_details.html', campaign=campaign, ads=ads)
 
@@ -518,7 +537,10 @@ def admin_info():
 @login_required
 def admin_find():
     if current_user.role == 'admin':
-        return render_template('admin_find.html')
+        users = User.query.all()
+        campaigns = Campaign.query.all()
+        ad_requests = AdRequest.query.all()
+        return render_template('admin_find.html', users=users, campaigns=campaigns, ad_requests=ad_requests)
     return redirect(url_for('main.home'))
 
 @main.route('/admin/stats')

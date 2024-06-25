@@ -3,3 +3,36 @@
     max-height: 150px; /* Set the height as desired */
     object-fit: cover; /* This will ensure the image covers the area without stretching */
 }
+
+.scrollable-container {
+    display: flex;
+    flex-direction: column; /* Vertical direction */
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: 150px; /* Adjust height to fit one row (or two rows) at a time */
+    scroll-snap-type: y mandatory; /* Enable snap scrolling */
+}
+
+.row-container {
+    display: flex;
+    flex-wrap: wrap; /* Wrap items into rows */
+}
+
+.row-container > .col-md-3 {
+    flex: 0 0 25%; /* Each item takes 25% of the container width */
+    box-sizing: border-box;
+    scroll-snap-align: start; /* Snap align to start */
+    margin-bottom: 10px; /* Optional: spacing between items */
+}
+
+.scrollable-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

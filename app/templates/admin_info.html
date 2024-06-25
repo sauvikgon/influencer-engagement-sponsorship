@@ -2,9 +2,21 @@
 {% block tab_content %}
 <h2>Information</h2>
 <h3>Users</h3>
-<ul>
+<!-- <ul>
     {% for user in users %}
     <li>{{ user.username }} - {{ user.role }}</li>
+    {% endfor %}
+</ul> -->
+<ul>
+    {% for user in users %}
+    <div class="col-md-4">
+        <div class="request-box card">
+            <div class="card-body">
+                <h4 class="card-title">{{ user.username }}</h4>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#influencerModal" data-id="{{ user.id }}">View</button>
+            </div>
+        </div>
+    </div>
     {% endfor %}
 </ul>
 <h3>Campaigns</h3>
@@ -116,6 +128,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var modal = $(this);
         modal.find('.modal-body').load('/ad_request_details/' + adRequestId);
+    });
+    $('#influencerModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var influencerId = button.data('id');
+
+        var modal = $(this);
+        modal.find('.modal-body').load('/influencer_details/' + influencerId);
     });
 });
 </script>

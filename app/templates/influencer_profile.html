@@ -72,7 +72,7 @@
                             {% endif %}
                             <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
                             {% if request.campaign.flag == 0 %}
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
+                                <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button> -->
                                 <a href="{{ url_for('main.edit_ad_request_infl', id=request.id) }}" class="btn btn-success">Edit</a>
                                 <a href="{{ url_for('main.reject_request_influencer', id=request.id) }}" class="btn btn-danger">Reject</a>
                             {% endif %}
@@ -127,26 +127,74 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Function to handle opening the campaign modal
+    function openCampaignModal(campaignId) {
+        // Ensure the campaignId is not undefined
+        if (!campaignId) {
+            console.error('Campaign ID is undefined');
+            return;
+        }
+
+        // Hide the ad request modal
+        $('#adRequestModal').modal('hide');
+
+        // Open the campaign modal after the ad request modal is hidden
+        $('#adRequestModal').on('hidden.bs.modal', function () {
+            var modal = $('#campaignModal');
+            modal.find('.modal-body').load('/campaign_details/' + campaignId);
+            modal.modal('show');
+            // Unbind this event to prevent multiple triggers
+            $(this).off('hidden.bs.modal');
+        });
+    }
+
+    // Handle showing the campaign modal
     $('#campaignModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var campaignId = button.data('id');
 
-        // Hide the adrequest modal when opening the campaign modal
-        $('#adRequestModal').modal('hide');
-        
+        // Ensure the campaignId is not undefined
+        if (!campaignId) {
+            console.error('Campaign ID is undefined');
+            return;
+        }
+
+        // Load the campaign details
         var modal = $(this);
         modal.find('.modal-body').load('/campaign_details/' + campaignId);
     });
 
+    // Handle showing the ad request modal
     $('#adRequestModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var adRequestId = button.data('id');
 
-        // Hide the campaign modal when opening the ad request modal
-        $('#campaignModal').modal('hide');
-
+        // Load the ad request details
         var modal = $(this);
         modal.find('.modal-body').load('/ad_request_details/' + adRequestId);
+
+        // Hide the campaign modal
+        $('#campaignModal').modal('hide');
+
+        // If there's a campaign link in the ad request modal, bind the click event
+        modal.on('click', '.campaign-link', function(event) {
+            event.preventDefault();
+            var campaignId = $(this).data('id');
+            openCampaignModal(campaignId);
+        });
+    });
+
+    // Ensure to hide modals if they are already open when opening another one
+    $('#campaignModal').on('hidden.bs.modal', function () {
+        if ($('.modal.show').length) {
+            $('body').addClass('modal-open');
+        }
+    });
+
+    $('#adRequestModal').on('hidden.bs.modal', function () {
+        if ($('.modal.show').length) {
+            $('body').addClass('modal-open');
+        }
     });
 });
 </script>
