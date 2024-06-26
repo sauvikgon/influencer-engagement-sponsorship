@@ -7,24 +7,26 @@
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
-<ul>
-    {% for influencer in active_influencer %}
-    <!-- <h4> {influencers} </h4> -->
-    <!-- <li>{{ influencer.name }} (Ends: {{ influencer.end_date }})</li> -->
-    <div class="col-md-4">
-        <div class="request-box card">
-            <div class="card-body">
-                <h4 class="card-title">{{ influencer.username }}</h4>
-                {% if influencer.flag == 1 %}
-                    <p class="text-danger">This User is flagged by a Admin</p>
-                {% endif %}
-                <!-- <p class="card-text">{{ influencer.platforms }}</p> -->
-                <button class="btn btn-primary" data-toggle="modal" data-target="#influencerModal" data-id="{{ influencer.id }}">View</button>
+<div class="scrollable-container sponsor-find-padding">
+    <div class="row-container">
+        {% for influencer in active_influencer %}
+        <!-- <h4> {influencers} </h4> -->
+        <!-- <li>{{ influencer.name }} (Ends: {{ influencer.end_date }})</li> -->
+        <div class="col-md-4">
+            <div class="request-box card">
+                <div class="card-body">
+                    <h4 class="card-title">{{ influencer.username }}</h4>
+                    {% if influencer.flag == 1 %}
+                        <p class="text-danger">This User is flagged by a Admin</p>
+                    {% endif %}
+                    <!-- <p class="card-text">{{ influencer.platforms }}</p> -->
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#influencerModal" data-id="{{ influencer.id }}">View</button>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</ul>
+</div>
 
 
 <!-- Modal -->

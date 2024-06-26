@@ -8,8 +8,60 @@
     display: flex;
     flex-direction: column; /* Vertical direction */
     overflow-y: auto; /* Enable vertical scrolling */
-    height: 150px; /* Adjust height to fit one row (or two rows) at a time */
+    height: 255px; /* Adjust height to fit one row (or two rows) at a time */
     scroll-snap-type: y mandatory; /* Enable snap scrolling */
+}
+
+.scrollable-container-custom-height {
+    height: 480px; /* Custom height for specific instance */
+}
+
+.scrollable-container-custom-height-infl-1 {
+    height: 150px; /* Custom height for specific instance */
+}
+
+.scrollable-container-custom-height-infl-2 {
+    height: 230px; /* Custom height for specific instance */
+}
+
+.scrollable-container-custom-height-infl-3 {
+    height: 260px; /* Custom height for specific instance */
+}
+
+.scrollable-container-custom-height-infl-4 {
+    height: 400px; /* Custom height for specific instance */
+}
+
+.scrollable-container-custom-height-adm-1 {
+    height: 140px; /* Custom height for specific instance */
+}
+
+.scrollable-container-custom-height-adm-2 {
+    height: 140px; /* Custom height for specific instance */
+}
+
+.scrollable-container-custom-height-adm-3 {
+    height: 160px; /* Custom height for specific instance */
+}
+
+.sponsor-campaign-padding {
+    padding: 10px;
+}
+
+.button-padding {
+    padding: 6px 12px;
+}
+
+.sponsor-find-padding {
+    padding: 10px;
+}
+
+.influencer-profile-padding {
+    padding: 15px;
+}
+
+.admin-profile-padding {
+    padding: 10px;
 }
 
 .row-container {
@@ -36,3 +88,211 @@
 .scrollable-container::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+
+/* Here styling for base.html starts */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s;
+}
+
+/* Glassmorphism effect */
+.glassmorphism {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: all 0.3s ease-in-out;
+}
+
+.glassmorphism:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(31, 38, 135, 0.57);
+}
+
+/* Form styling */
+.form-control {
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #333;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border: none;
+}
+
+.btn-info:hover {
+    background-color: #117a8b;
+}
+
+/* Animation */
+.animated {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background-color: #222;
+    color: #ddd;
+}
+
+.dark-mode .glassmorphism {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .form-control {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #ddd;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .btn-primary,
+.dark-mode .btn-success,
+.dark-mode .btn-info {
+    filter: brightness(85%);
+}
+
+/* Here home_new.html styling ends */
+
+/* Dark mode card titles start */
+
+/* Adjustments for profile and dashboard in dark mode */
+
+/* Ensure background and text colors are distinct */
+.dark-mode .profile-main {
+    background-color: rgba(0, 0, 0, 0.5); /* Example background color for dark mode */
+    color: #ddd; /* Example text color for dark mode */
+    padding: 20px; /* Adjust padding as needed */
+}
+
+.dark-mode .card {
+    background-color: rgba(0, 0, 0, 0.3); /* Example background color for cards in dark mode */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Example border color */
+}
+
+.dark-mode .card-title,
+.dark-mode .card-text {
+    color: #fff; /* Example text color for card titles and text */
+}
+
+.dark-mode .text-danger {
+    color: #ff4d4d; /* Example color for flagged content in dark mode */
+}
+
+
+
+
+/* Dark mode card titles end */
+
+
+
+/* Here the dark mode for other pages extra starts */
+/* Toggle Button Styles */
+.dark-mode-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    position: relative;
+}
+
+.light-mode-icon,
+.dark-mode-icon {
+    position: absolute;
+    font-size: 24px;
+}
+
+.light-mode-icon {
+    color: #f39c12;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.dark-mode-icon {
+    color: #f1c40f;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.dark-mode .dark-mode-toggle {
+    background-color: #222;
+}
+
+.dark-mode .light-mode-icon {
+    opacity: 0;
+}
+
+.dark-mode .dark-mode-icon {
+    opacity: 1;
+}
+
+/* Hide the input checkbox */
+#darkSwitch {
+    display: none;
+}
+
+/* Here the dark mode for all otehr pages extra ends */

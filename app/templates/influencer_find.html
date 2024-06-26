@@ -7,25 +7,27 @@
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
-<ul>
-    {% for campaign in active_campaigns %}
-    <!-- <li>{{ campaign.name }} (Ends: {{ campaign.end_date }})</li> -->
-    <div class="col-md-4">
-        <div class="request-box card">
-            <div class="card-body">
-                <h4 class="card-title">{{ campaign.name }}</h4>
-                <p class="card-text">{{ campaign.details }}</p>
-                {% if campaign.flag == 1 %}
-                    <p class="text-danger">This Campaign is flagged</p>
-                {% endif %}
-                <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
-                {% if campaign.flag == 0 and current_user.flag == 0 %}
-                    <a href="{{ url_for('main.new_ad_request_infl', campaign_id=campaign.id, influencer_id=influencer.id) }}" class="btn btn-success">Request</a>
-                {% endif %}
+<div class="scrollable-container scrollable-container-custom-height-infl-4">
+    <div class="row-container">
+        {% for campaign in active_campaigns %}
+        <!-- <li>{{ campaign.name }} (Ends: {{ campaign.end_date }})</li> -->
+        <div class="col-md-4">
+            <div class="request-box card">
+                <div class="card-body">
+                    <h4 class="card-title">{{ campaign.name }}</h4>
+                    <p class="card-text">{{ campaign.details }}</p>
+                    {% if campaign.flag == 1 %}
+                        <p class="text-danger">This Campaign is flagged</p>
+                    {% endif %}
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
+                    {% if campaign.flag == 0 and current_user.flag == 0 %}
+                        <a href="{{ url_for('main.new_ad_request_infl', campaign_id=campaign.id, influencer_id=influencer.id) }}" class="btn btn-success">Request</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </ul>
 
 

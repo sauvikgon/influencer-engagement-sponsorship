@@ -1,83 +1,93 @@
 {% extends "sponsor_dashboard.html" %}
 {% block tab_content %}
 <h2>Profile</h2>
-<div class="col-md-9">
+<div class="col-md-13">
     <div class="profile-main">
-        <h2>Welcome, {{ current_user.username }}!</h2>
+        <!-- <h2>Welcome, {{ current_user.username }}!</h2> -->
         {% if current_user.flag == 1 %}
             <h1><p class="text-danger">You are flagged by a Admin</p></h1>
         {% endif %}
         <h3>Active Campaigns</h3>
-        <ul>
-            {% for campaign in active_campaigns %}
-            <div class="col-md-4">
-                <div class="request-box card">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ campaign.name }}</h4>
-                        <p class="card-text">{{ campaign.details }}</p>
-                        {% if campaign.flag == 1 %}
-                            <p class="text-danger">This Campaign is flagged</p>
-                        {% endif %}
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
+        <!-- <ul> -->
+            <div class="scrollable-container">
+                <div class="row-container">
+                    {% for campaign in active_campaigns %}
+                    <div class="col-md-3">
+                        <div class="request-box card">
+                            <div class="card-body">
+                                <h4 class="card-title">{{ campaign.name }}</h4>
+                                <p class="card-text">{{ campaign.details }}</p>
+                                {% if campaign.flag == 1 %}
+                                    <p class="text-danger">This Campaign is flagged</p>
+                                {% endif %}
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
+                            </div>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
-        </ul>
+        <!-- </ul> -->
         
         <h3>New Requests (Pending)</h3>
-        <div class="row">
-            {% for request in new_requests %}
-            <div class="col-md-4">
-                <div class="request-box card">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ request.requirements }}</h4>
-                        <p class="card-text">Campaign: {{ request.campaign.name }}</p>
-                        <p class="card-text">Payment: {{ request.payment_amount }}</p>
-                        {% if request.campaign.flag == 1 %}
-                            <p class="text-danger">The campaign associated with this ad request is flagged</p>
-                        {% endif %}
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
-                        {% for influencer in active_influencer %}
-                            {% if request.campaign.flag == 0 and current_user.flag == 0 and influencer.id == request.influencer_id and influencer.flag == 0 %}
-                                <a href="{{ url_for('main.accept_request_sponsor', id=request.id) }}" class="btn btn-success">Accept</a>
-                                <a href="{{ url_for('main.edit_ad_request_spon', id=request.id) }}" class="btn btn-info">Edit</a>
-                                <a href="{{ url_for('main.reject_request_sponsor', id=request.id) }}" class="btn btn-warning">Reject</a>
-                                <a href="{{ url_for('main.delete_ad_request', id=request.id) }}" class="btn btn-danger">DELETE</a>
-                            {% endif %}
-                        {% endfor %}
+        <!-- <div class="row"> -->
+            <div class="scrollable-container">
+                <div class="row-container">
+                    {% for request in new_requests %}
+                    <div class="col-md-3">
+                        <div class="request-box card">
+                            <div class="card-body">
+                                <h4 class="card-title">{{ request.requirements }}</h4>
+                                <p class="card-text">Campaign: {{ request.campaign.name }}</p>
+                                <p class="card-text">Payment: {{ request.payment_amount }}</p>
+                                {% if request.campaign.flag == 1 %}
+                                    <p class="text-danger">The campaign associated with this ad request is flagged</p>
+                                {% endif %}
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
+                                {% for influencer in active_influencer %}
+                                    {% if request.campaign.flag == 0 and current_user.flag == 0 and influencer.id == request.influencer_id and influencer.flag == 0 %}
+                                        <a href="{{ url_for('main.accept_request_sponsor', id=request.id) }}" class="btn btn-success">Accept</a>
+                                        <a href="{{ url_for('main.edit_ad_request_spon', id=request.id) }}" class="btn btn-info">Edit</a>
+                                        <a href="{{ url_for('main.reject_request_sponsor', id=request.id) }}" class="btn btn-warning">Reject</a>
+                                        <a href="{{ url_for('main.delete_ad_request', id=request.id) }}" class="btn btn-danger">DELETE</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
-        </div>
+        <!-- </div> -->
 
         <h3>Ad Requests (Pending for influencer acceptance)</h3>
-        <div class="row">
-            {% for request in influencer_pending_request %}
-            <div class="col-md-4">
-                <div class="request-box card">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ request.requirements }}</h4>
-                        <p class="card-text">Campaign: {{ request.campaign.name }}</p>
-                        <p class="card-text">Payment: {{ request.payment_amount }}</p>
-                        {% if request.campaign.flag == 1 %}
-                            <p class="text-danger">The campaign associated with this ad request is flagged</p>
-                        {% endif %}
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
-                        {% for influencer in active_influencer %}
-                            {% if request.campaign.flag == 0 and current_user.flag == 0 and influencer.id == request.influencer_id and influencer.flag == 0 %}
-                                <a href="{{ url_for('main.edit_ad_request_spon', id=request.id) }}" class="btn btn-success">Edit</a>
-                                <a href="{{ url_for('main.reject_request_sponsor', id=request.id) }}" class="btn btn-warning">Reject</a>
-                                <a href="{{ url_for('main.delete_campaign', id=request.id) }}" class="btn btn-danger">DELETE</a>
+        <!-- <div class="row"> -->
+        <div class="scrollable-container">
+            <div class="row-container">
+                {% for request in influencer_pending_request %}
+                <div class="col-md-3">
+                    <div class="request-box card">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ request.requirements }}</h4>
+                            <p class="card-text">Campaign: {{ request.campaign.name }}</p>
+                            <p class="card-text">Payment: {{ request.payment_amount }}</p>
+                            {% if request.campaign.flag == 1 %}
+                                <p class="text-danger">The campaign associated with this ad request is flagged</p>
                             {% endif %}
-                        {% endfor %}
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
+                            {% for influencer in active_influencer %}
+                                {% if request.campaign.flag == 0 and current_user.flag == 0 and influencer.id == request.influencer_id and influencer.flag == 0 %}
+                                    <a href="{{ url_for('main.edit_ad_request_spon', id=request.id) }}" class="btn btn-success">Edit</a>
+                                    <a href="{{ url_for('main.reject_request_sponsor', id=request.id) }}" class="btn btn-warning">Reject</a>
+                                    <a href="{{ url_for('main.delete_campaign', id=request.id) }}" class="btn btn-danger">DELETE</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
 </div>
 
 <!-- Campaign Modal -->

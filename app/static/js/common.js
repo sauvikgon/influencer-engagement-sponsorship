@@ -1,4 +1,43 @@
 document.addEventListener('DOMContentLoaded', function() {
+
+    // Here home_new.html js starts
+
+    const darkSwitch = document.getElementById('darkSwitch');
+    const jumbotron = document.getElementById('jumbotron');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    // Check for saved dark mode preference
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme) {
+        document.body.classList.toggle('dark-mode', currentTheme === 'dark');
+        darkSwitch.checked = currentTheme === 'dark';
+    }
+
+    // Toggle dark mode
+    darkSwitch.addEventListener('change', function(event) {
+        if (event.target.checked) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+
+    // Dynamic glassmorphism hover effect
+    const glassmorphismElements = [jumbotron, loginForm, registerForm];
+    glassmorphismElements.forEach(element => {
+        element.addEventListener('mouseover', function() {
+            element.classList.add('glassmorphism-hover');
+        });
+        element.addEventListener('mouseleave', function() {
+            element.classList.remove('glassmorphism-hover');
+        });
+    });
+
+    // Here home_new.html js ends
+
     // Function to handle opening the campaign modal
     function openCampaignModal(campaignId) {
         // Ensure the campaignId is not undefined
@@ -128,3 +167,33 @@ document.querySelectorAll('.btn[data-target]').forEach(button => {
         }
     });
 });
+
+// This is for dark mode for all pages:
+
+document.getElementById('darkSwitch').addEventListener('change', function() {
+    if (this.checked) {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+});
+
+// Preserve the user's preference using localStorage
+document.addEventListener('DOMContentLoaded', (event) => {
+    if (localStorage.getItem('dark-mode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkSwitch').checked = true;
+    }
+
+    document.getElementById('darkSwitch').addEventListener('change', function() {
+        if (this.checked) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('dark-mode', 'enabled');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('dark-mode', 'disabled');
+        }
+    });
+});
+
+// This is end for dark mode for all pages

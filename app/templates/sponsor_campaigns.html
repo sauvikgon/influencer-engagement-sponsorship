@@ -7,28 +7,34 @@
 {% if current_user.flag == 0 %}
 <a href="{{ url_for('main.new_campaign') }}" class="btn btn-primary">Create New Campaign</a>
 {% endif %}
-<ul>
-    {% for campaign in campaigns %}
-    <div class="col-md-4">
-        <div class="request-box card">
-            <div class="card-body">
-                <h4 class="card-title">{{ campaign.name }}</h4>
-                <p class="card-text">{{ campaign.details }}</p>
-                {% if campaign.flag == 1 %}
-                    <p class="text-danger">Campaign is flagged</p>
-                {% endif %}
-                <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
-                {% if campaign.flag == 0 and current_user.flag == 0 %}
-                    <!-- <p class="text-danger">Campaign is flagged</p> -->
-                    <a href="{{ url_for('main.edit_campaign', id=campaign.id) }}" class="btn btn-warning">Edit</a>
-                    <a href="{{ url_for('main.new_ad_request', campaign_id=campaign.id) }}" class="btn btn-success">Create Ad Request</a>
-                    <a href="{{ url_for('main.delete_campaign', id=campaign.id) }}" class="btn btn-danger">DELETE</a>
-                {% endif %}
+<!-- <ul> -->
+    <!-- <div class="scrollable-container"> -->
+<div class="scrollable-container scrollable-container-custom-height sponsor-campaign-padding">
+    <div class="row-container">
+        {% for campaign in campaigns %}
+        <div class="col-md-4">
+            <div class="request-box card">
+                <div class="card-body">
+                    <h4 class="card-title">{{ campaign.name }}</h4>
+                    <p class="card-text">{{ campaign.details }}</p>
+                    {% if campaign.flag == 1 %}
+                        <p class="text-danger">Campaign is flagged</p>
+                    {% endif %}
+                    <button class="btn btn-primary button-padding" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
+                    {% if campaign.flag == 0 and current_user.flag == 0 %}
+                        <!-- <p class="text-danger">Campaign is flagged</p> -->
+                        <a href="{{ url_for('main.edit_campaign', id=campaign.id) }}" class="btn btn-warning button-padding">Edit</a>
+                        <a href="{{ url_for('main.new_ad_request', campaign_id=campaign.id) }}" class="btn btn-success button-padding">Create Ad Request</a>
+                        <a href="{{ url_for('main.delete_campaign', id=campaign.id) }}" class="btn btn-danger button-padding">DELETE</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
     {% endfor %}
-</ul>
+    </div>
+</div>
+    <!-- </div> -->
+<!-- </ul> -->
 
 <!-- Campaign Modal -->
 <div class="modal fade" id="campaignModal" tabindex="-1" role="dialog" aria-labelledby="campaignModalLabel" aria-hidden="true">
