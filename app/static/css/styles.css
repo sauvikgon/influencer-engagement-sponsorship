@@ -16,6 +16,18 @@
     height: 480px; /* Custom height for specific instance */
 }
 
+.scrollable-container-custom-height-spon-1 {
+    height: 150px; /* Custom height for specific instance */
+}
+
+.scrollable-container-custom-height-spon-2 {
+    height: 250px; /* Custom height for specific instance */
+}
+
+.scrollable-container-custom-height-spon-3 {
+    height: 250px; /* Custom height for specific instance */
+}
+
 .scrollable-container-custom-height-infl-1 {
     height: 150px; /* Custom height for specific instance */
 }

@@ -1,5 +1,20 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+    // Function to load modal content
+    function loadModal(modalTarget, detailsUrl) {
+        // Ensure the modalTarget and detailsUrl are not undefined
+        if (!modalTarget || !detailsUrl) {
+            console.error('Modal target or details URL is undefined');
+            return;
+        }
+
+        // Load the modal content
+        var modal = $(modalTarget);
+        modal.find('.modal-body').load(detailsUrl, function() {
+            modal.modal('show');
+        });
+    }
+
     // Here home_new.html js starts
 
     const darkSwitch = document.getElementById('darkSwitch');
@@ -147,6 +162,22 @@ document.querySelector('.scrollable-container').addEventListener('scroll', funct
 
 // Event listener for buttons
 document.querySelectorAll('.btn[data-target]').forEach(button => {
+
+    // Function to load modal content
+    function loadModal(modalTarget, detailsUrl) {
+        // Ensure the modalTarget and detailsUrl are not undefined
+        if (!modalTarget || !detailsUrl) {
+            console.error('Modal target or details URL is undefined');
+            return;
+        }
+
+        // Load the modal content
+        var modal = $(modalTarget);
+        modal.find('.modal-body').load(detailsUrl, function() {
+            modal.modal('show');
+        });
+    }
+    
     button.addEventListener('click', function() {
         const userId = this.getAttribute('data-id');
         const modalTarget = this.getAttribute('data-target');
@@ -160,6 +191,10 @@ document.querySelectorAll('.btn[data-target]').forEach(button => {
             detailsUrl = `/admin_details/${userId}`;
         } else if (modalTarget === '#sponsorModal') {
             detailsUrl = `/sponsor_details/${userId}`;
+        } else if (modalTarget === '#campaignModal') {
+            detailsUrl = `/campaign_details/${userId}`;
+        } else if (modalTarget === '#adRequestModal') {
+            detailsUrl = `/ad_request_details/${userId}`;
         }
         
         if (userId) {

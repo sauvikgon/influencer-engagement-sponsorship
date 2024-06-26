@@ -16,7 +16,7 @@
                     <h4 class="card-title">{{ user.username }}</h4>
                     <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#influencerModal" data-id="{{ user.id }}">View</button> -->
                     {% if user.flag == 1 %}
-                        <p class="text-danger">This User is unflagged</p>
+                        <!-- <p class="text-danger">This User is unflagged</p> -->
                         <form method="POST" action="{{ url_for('main.unflag_user', id=user.id) }}">
                             <button type="submit" class="btn btn-danger">Unflag</button>
                         </form>
@@ -97,6 +97,8 @@
         {% endfor %}
     </div>
 </div>
+
+
 <div class="admin-profile-padding"></div>
 <!-- Influencer Modal -->
 <div class="modal fade" id="influencerModal" tabindex="-1" role="dialog" aria-labelledby="influencerModalLabel" aria-hidden="true">
@@ -108,7 +110,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="influencer">
                 <!-- Influencer details will be loaded here dynamically -->
             </div>
             <div class="modal-footer">
@@ -199,36 +201,5 @@
     </div>
 </div>
 
-<!-- <script>
-document.addEventListener('DOMContentLoaded', function() {
-    $('#campaignModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var campaignId = button.data('id');
 
-        // Hide the adrequest modal when opening the campaign modal
-        $('#adRequestModal').modal('hide');
-        
-        var modal = $(this);
-        modal.find('.modal-body').load('/campaign_details/' + campaignId);
-    });
-
-    $('#adRequestModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var adRequestId = button.data('id');
-
-        // Hide the campaign modal when opening the ad request modal
-        $('#campaignModal').modal('hide');
-
-        var modal = $(this);
-        modal.find('.modal-body').load('/ad_request_details/' + adRequestId);
-    });
-    $('#influencerModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var influencerId = button.data('id');
-
-        var modal = $(this);
-        modal.find('.modal-body').load('/influencer_details/' + influencerId);
-    });
-});
-</script> -->
 {% endblock %}

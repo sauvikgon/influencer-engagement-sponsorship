@@ -263,7 +263,11 @@ def edit_ad_request_spon(id):
     
     form = AdRequestForm(obj=adrequest)
     
+    influencers = [(influencer.id, influencer.username) for influencer in User.query.filter_by(role='influencer', flag=0).all()]
+    form.influencer_id.choices = influencers
+
     if form.validate_on_submit():
+        adrequest.influencer_id = form.influencer_id.data
         adrequest.requirements = form.requirements.data
         adrequest.payment_amount = form.payment_amount.data
         adrequest.status_sponsor = 'Accepted'
@@ -314,20 +318,25 @@ def new_ad_request_infl(campaign_id, influencer_id):
 def edit_ad_request_infl(id):
     adrequest = AdRequest.query.get_or_404(id)
     campaign = Campaign.query.get_or_404(adrequest.campaign_id)
-
+    # new_id=current_user.id
+    # print(adrequest.influencer_id)
     if campaign.flag == True:
         flash('This Campaign is flagged')
         return redirect(url_for('main.dashboard'))
     
     # Check if the current user is the owner of the ad request
-    if adrequest.influencer_id != current_user.id:
+    if ((adrequest.influencer_id != current_user.id) and adrequest.influencer_id != 1):
         flash('You do not have permission to edit this ad request.', 'danger')
         return redirect(url_for('main.dashboard'))
     
     form = AdRequestForm(obj=adrequest)
+
+    influencers = [(influencer.id, influencer.username) for influencer in User.query.filter_by(role='influencer', flag=0).all()]
+    form.influencer_id.choices = influencers
     
     if form.validate_on_submit():
-        # adrequest.influencer_id = form.influencer_id.data
+        # The below will force influencer_id when it is set to public user
+        adrequest.influencer_id = current_user.id
         adrequest.payment_amount = form.payment_amount.data
         adrequest.status_sponsor = 'Pending'
         adrequest.status_influencer = 'Accepted'
@@ -416,7 +425,7 @@ def sponsor_find():
 def view_influencer(id):
     # Implement the logic to view campaign details
     influencer = User.query.get_or_404(id)
-    # print(id)
+    print(id)
     return render_template('influencer_details.html', user=influencer)
 
 @main.route('/sponsor_details/<int:id>')
@@ -464,6 +473,7 @@ def influencer_profile():
         return redirect(url_for('main.home'))
 
     influencer = current_user
+    print(current_user.id)
     public_influencer = User.query.filter_by(username='Public').first()
     # active_campaigns = Campaign.query.filter_by(visibility='public').all()
     active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id)\

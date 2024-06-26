@@ -9,7 +9,7 @@
         {% endif %}
         <h3>Active Campaigns</h3>
         <!-- <ul> -->
-            <div class="scrollable-container">
+            <div class="scrollable-container scrollable-container-custom-height-spon-1">
                 <div class="row-container">
                     {% for campaign in active_campaigns %}
                     <div class="col-md-3">
@@ -31,7 +31,7 @@
         
         <h3>New Requests (Pending)</h3>
         <!-- <div class="row"> -->
-            <div class="scrollable-container">
+            <div class="scrollable-container scrollable-container-custom-height-spon-2">
                 <div class="row-container">
                     {% for request in new_requests %}
                     <div class="col-md-3">
@@ -62,7 +62,7 @@
 
         <h3>Ad Requests (Pending for influencer acceptance)</h3>
         <!-- <div class="row"> -->
-        <div class="scrollable-container">
+        <div class="scrollable-container scrollable-container-custom-height-spon-3">
             <div class="row-container">
                 {% for request in influencer_pending_request %}
                 <div class="col-md-3">
