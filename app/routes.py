@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 from functools import wraps
 from datetime import date, datetime
 import os
+import uuid
 
 main = Blueprint('main', __name__)
 
@@ -492,17 +493,45 @@ def influencer_profile():
                            new_requests=new_requests,
                            sponsor_pending_request=sponsor_pending_request)
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+
 @main.route('/update_profile_pic', methods=['POST'])
+@login_required
 def update_profile_pic():
-    if 'profile_pic' in request.files:
-        file = request.files['profile_pic']
-        if file.filename != '':
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-            # Update user's profile picture path in the database
-            current_user.profile_pic = filename
-            db.session.commit()
-    return redirect(url_for('main.influencer_profile'))
+    if 'profile_pic' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+
+    file = request.files['profile_pic']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+
+    if file and allowed_file(file.filename):
+        # Generate a unique filename based on user ID
+        filename = f"{current_user.id}_{uuid.uuid4().hex}.png"
+
+        # Secure the filename
+        filename = secure_filename(filename)
+
+        # Define the path to save the new profile picture
+        filepath = os.path.join(current_app.root_path, 'static/profile_pics', filename)
+
+        # Delete the old profile picture if it's not the default one
+        old_filepath = os.path.join(current_app.root_path, 'static/profile_pics', current_user.profile_pic)
+        if os.path.exists(old_filepath) and current_user.profile_pic != 'download.png':
+            os.remove(old_filepath)
+
+        # Save the new profile picture
+        file.save(filepath)
+
+        # Update the user's profile picture filename in the database
+        current_user.profile_pic = filename
+        db.session.commit()
+
+        flash('Your profile picture has been updated!', 'success')
+        return redirect(url_for('main.influencer_profile'))
 
 @main.route('/campaign_details/<int:campaign_id>', methods=['GET'])
 @login_required

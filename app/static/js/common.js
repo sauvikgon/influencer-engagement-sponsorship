@@ -232,3 +232,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 // This is end for dark mode for all pages
+
+
