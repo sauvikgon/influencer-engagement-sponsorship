@@ -38,13 +38,14 @@
                             <p class="text-danger">The campaign associated with this ad request is flagged</p>
                         {% endif %}
                         <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
-                        {% if request.campaign.flag == 0 and current_user.flag == 0 and request.influencer_id.flag == 0 %}
-                            <a href="{{ url_for('main.accept_request_sponsor', id=request.id) }}" class="btn btn-success">Accept</a>
-                            <a href="{{ url_for('main.edit_ad_request_spon', id=request.id) }}" class="btn btn-info">Edit</a>
-                            <a href="{{ url_for('main.reject_request_sponsor', id=request.id) }}" class="btn btn-warning">Reject</a>
-                            <a href="{{ url_for('main.delete_ad_request', id=request.id) }}" class="btn btn-danger">DELETE</a>
-                        {% endif %}
-
+                        {% for influencer in active_influencer %}
+                            {% if request.campaign.flag == 0 and current_user.flag == 0 and influencer.id == request.influencer_id and influencer.flag == 0 %}
+                                <a href="{{ url_for('main.accept_request_sponsor', id=request.id) }}" class="btn btn-success">Accept</a>
+                                <a href="{{ url_for('main.edit_ad_request_spon', id=request.id) }}" class="btn btn-info">Edit</a>
+                                <a href="{{ url_for('main.reject_request_sponsor', id=request.id) }}" class="btn btn-warning">Reject</a>
+                                <a href="{{ url_for('main.delete_ad_request', id=request.id) }}" class="btn btn-danger">DELETE</a>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -64,11 +65,13 @@
                             <p class="text-danger">The campaign associated with this ad request is flagged</p>
                         {% endif %}
                         <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
-                        {% if request.campaign.flag == 0 and current_user.flag == 0 and request.influencer_id.flag == 0 %}
-                            <a href="{{ url_for('main.edit_ad_request_spon', id=request.id) }}" class="btn btn-success">Edit</a>
-                            <a href="{{ url_for('main.reject_request_sponsor', id=request.id) }}" class="btn btn-warning">Reject</a>
-                            <a href="{{ url_for('main.delete_campaign', id=request.id) }}" class="btn btn-danger">DELETE</a>
-                        {% endif %}
+                        {% for influencer in active_influencer %}
+                            {% if request.campaign.flag == 0 and current_user.flag == 0 and influencer.id == request.influencer_id and influencer.flag == 0 %}
+                                <a href="{{ url_for('main.edit_ad_request_spon', id=request.id) }}" class="btn btn-success">Edit</a>
+                                <a href="{{ url_for('main.reject_request_sponsor', id=request.id) }}" class="btn btn-warning">Reject</a>
+                                <a href="{{ url_for('main.delete_campaign', id=request.id) }}" class="btn btn-danger">DELETE</a>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>

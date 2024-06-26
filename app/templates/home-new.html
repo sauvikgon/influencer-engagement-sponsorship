@@ -7,26 +7,26 @@
             margin-top: 0; /* Adjust this value as needed */
         }
     </style>
-    <h1 class="display-4">Influencer Engagement and Sponsorship Coordination Platform</h1>
-    <p class="lead">Connect sponsors with influencers to advertise products and services effectively.</p>
-    <hr class="my-4">
-</div>
+        <h1 class="display-4">Influencer Engagement and Sponsorship Coordination Platform</h1>
+        <p class="lead">Connect sponsors with influencers to advertise products and services effectively.</p>
+        <hr class="my-4">
+    </div>
 <div class="row">
     <div class="col-md-6">
         <h2>Login</h2>
-        <form method="POST" action="{{ url_for('main.login') }}">
-            {{ form.hidden_tag() }}
-            <div class="form-group">
+            <form method="POST" action="{{ url_for('main.login') }}">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
                 {{ form.email.label }} {{ form.email(class_="form-control") }}
-            </div>
-            <div class="form-group">
+                </div>
+                <div class="form-group">
                 {{ form.password.label }} {{ form.password(class_="form-control") }}
-            </div>
-            <div class="form-group">
+                </div>
+                <div class="form-group">
                 {{ form.submit(class_="btn btn-primary") }}
-            </div>
-        </form>
-    </div>
+                </div>
+            </form>
+        </div>
     <div class="col-md-6" style = "margin-bottom: 100px;">
         <h3>Register</h3>
         <a class="btn btn-success" href="{{ url_for('main.register_sponsor') }}">Register as Sponsor</a>

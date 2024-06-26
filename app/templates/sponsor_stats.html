@@ -1,8 +1,29 @@
 {% extends "sponsor_dashboard.html" %}
 {% block tab_content %}
 <h2>Stats</h2>
-<!-- Include any charts or statistics here -->
-<div>
-    <p>Statistics will be displayed here.</p>
-</div>
+<!-- Include the ChartJS canvas element here -->
+<canvas id="campaignBudgetChart"></canvas>
+<script>
+    var ctx = document.getElementById('campaignBudgetChart').getContext('2d');
+    var campaignBudgetChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ campaign_names|safe }},
+            datasets: [{
+                label: 'Campaign Budget',
+                data: {{ campaign_budgets|safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

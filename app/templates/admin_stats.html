@@ -5,4 +5,166 @@
 <div>
     <p>Statistics will be displayed here.</p>
 </div>
+<!-- <canvas id="userStatsChart"></canvas>
+    <script>
+        var ctx = document.getElementById('userStatsChart').getContext('2d');
+        var userStatsChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Sponsors', 'Influencers'],
+                datasets: [{
+                    label: 'User Distribution',
+                    data: {{ user_counts|safe }},
+                    backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+                    borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.raw;
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script> -->
+
+    <div class="container">
+        <h2>Admin Statistics</h2>
+    
+        <div class="row">
+            <div class="col-md-6">
+                <canvas id="userStatsChart"></canvas>
+            </div>
+            <div class="col-md-6">
+                <canvas id="campaignStatsChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <canvas id="adRequestStatsChart"></canvas>
+            </div>
+            <div class="col-md-6">
+                <canvas id="flaggedStatsChart"></canvas>
+            </div>
+        </div>
+    
+        <script>
+            var userStatsCtx = document.getElementById('userStatsChart').getContext('2d');
+            var userStatsChart = new Chart(userStatsCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Sponsors', 'Influencers'],
+                    datasets: [{
+                        label: 'User Distribution',
+                        data: {{ user_counts|safe }},
+                        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.raw;
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+    
+            var campaignStatsCtx = document.getElementById('campaignStatsChart').getContext('2d');
+            var campaignStatsChart = new Chart(campaignStatsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Active Campaigns'],
+                    datasets: [{
+                        label: 'Campaign Count',
+                        data: {{ active_campaigns|safe }},
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+    
+            var adRequestStatsCtx = document.getElementById('adRequestStatsChart').getContext('2d');
+            var adRequestStatsChart = new Chart(adRequestStatsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Ongoing', 'Rejected'],
+                    datasets: [{
+                        label: 'Ad Requests',
+                        data: {{ ad_request_counts|safe }},
+                        backgroundColor: ['rgba(255, 206, 86, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                        borderColor: ['rgba(255, 206, 86, 1)', 'rgba(255, 99, 132, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+    
+            var flaggedStatsCtx = document.getElementById('flaggedStatsChart').getContext('2d');
+            var flaggedStatsChart = new Chart(flaggedStatsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Flagged Users', 'Flagged Campaigns'],
+                    datasets: [{
+                        label: 'Flagged Count',
+                        data: {{ flagged_counts|safe }},
+                        backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(153, 102, 255, 0.2)'],
+                        borderColor: ['rgba(255, 159, 64, 1)', 'rgba(153, 102, 255, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    </div>
 {% endblock %}

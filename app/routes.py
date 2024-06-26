@@ -8,6 +8,7 @@ from sqlalchemy import or_
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from functools import wraps
+from datetime import date, datetime
 import os
 
 main = Blueprint('main', __name__)
@@ -372,12 +373,14 @@ def sponsor_profile():
     .filter(Campaign.user_id == sponsor.id, AdRequest.status_sponsor == "Accepted").all()
     new_requests = AdRequest.query.join(Campaign, AdRequest.campaign_id == Campaign.id)\
                               .filter(Campaign.user_id == sponsor.id, AdRequest.status_sponsor == 'Pending').all()
+    active_influencer = User.query.filter_by(role='influencer').all()
     influencer_pending_request = AdRequest.query.join(Campaign, AdRequest.campaign_id == Campaign.id)\
                               .filter(Campaign.user_id == sponsor.id, AdRequest.status_influencer == 'Pending').all()
 
     return render_template('sponsor_profile.html',
                            sponsor=sponsor,
                            active_campaigns=active_campaigns,
+                           active_influencer=active_influencer,
                            new_requests=new_requests,
                            influencer_pending_request=influencer_pending_request)
 
@@ -435,10 +438,16 @@ def view_admin(id):
 @main.route('/sponsor/stats')
 @login_required
 def sponsor_stats():
-    if current_user.role == 'sponsor':
-        # You may need to add logic to gather relevant stats
-        return render_template('sponsor_stats.html')
-    return redirect(url_for('main.home'))
+    if current_user.role != 'sponsor':
+        return redirect(url_for('main.dashboard'))
+
+    campaigns = Campaign.query.filter_by(user_id=current_user.id).all()
+    campaign_names = [campaign.name for campaign in campaigns]
+    campaign_budgets = [campaign.budget for campaign in campaigns]
+
+    return render_template('sponsor_stats.html',
+                           campaign_names=campaign_names,
+                           campaign_budgets=campaign_budgets)
 
 
 # For Influencers
@@ -568,9 +577,16 @@ def influencer_find():
 @main.route('/influencer/stats')
 @login_required
 def influencer_stats():
-    if current_user.role == 'influencer':
-        return render_template('influencer_stats.html')
-    return redirect(url_for('main.home'))
+    if current_user.role != 'influencer':
+        return redirect(url_for('main.dashboard'))
+
+    # For demonstration purposes, we use dummy data
+    months = ['January', 'February', 'March', 'April', 'May', 'June']
+    earnings = [500, 700, 800, 600, 900, 1100]
+
+    return render_template('influencer_stats.html',
+                           months=months,
+                           earnings=earnings)
 
 # For Admins
 @main.route('/admin/info')
@@ -596,6 +612,26 @@ def admin_find():
 @main.route('/admin/stats')
 @login_required
 def admin_stats():
-    if current_user.role == 'admin':
-        return render_template('admin_stats.html')
-    return redirect(url_for('main.home'))
+    if current_user.role != 'admin':
+        return redirect(url_for('main.dashboard'))
+
+    sponsors_count = User.query.filter_by(role='sponsor').count()
+    influencers_count = User.query.filter_by(role='influencer').count()
+    user_counts = [sponsors_count, influencers_count]
+
+    active_campaigns_count = Campaign.query.filter(Campaign.end_date >= date.today()).count()
+    active_campaigns = [active_campaigns_count]
+
+    ongoing_ad_requests_count = AdRequest.query.filter(AdRequest.status_sponsor=='Accepted', AdRequest.status_influencer=='Accepted').count()
+    rejected_ad_requests_count = AdRequest.query.filter((AdRequest.status_sponsor=='Rejected') | (AdRequest.status_influencer=='Rejected')).count()
+    ad_request_counts = [ongoing_ad_requests_count, rejected_ad_requests_count]
+
+    flagged_users_count = User.query.filter_by(flag=True).count()
+    flagged_campaigns_count = Campaign.query.filter_by(flag=True).count()
+    flagged_counts = [flagged_users_count, flagged_campaigns_count]
+
+    return render_template('admin_stats.html',
+                           user_counts=user_counts,
+                           active_campaigns=active_campaigns,
+                           ad_request_counts=ad_request_counts,
+                           flagged_counts=flagged_counts)
