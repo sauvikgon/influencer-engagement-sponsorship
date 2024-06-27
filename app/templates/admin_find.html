@@ -3,7 +3,7 @@
 <h2>Find Users</h2>
 <form method="GET" action="{{ url_for('main.admin_find') }}">
     <div class="form-group">
-        <input type="text" name="search" class="form-control" placeholder="Search for users...">
+        <input type="text" name="search-user" class="form-control" placeholder="Search for users...">
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
@@ -38,7 +38,7 @@
 <h2>Find Campaigns</h2>
 <form method="GET" action="{{ url_for('main.admin_find') }}">
     <div class="form-group">
-        <input type="text" name="search" class="form-control" placeholder="Search for campaigns...">
+        <input type="text" name="search-campaign" class="form-control" placeholder="Search for campaigns...">
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
@@ -73,7 +73,7 @@
 <h2>Find Ad requests</h2>
 <form method="GET" action="{{ url_for('main.admin_find') }}">
     <div class="form-group">
-        <input type="text" name="search" class="form-control" placeholder="Search for ad request...">
+        <input type="text" name="search-adrequest" class="form-control" placeholder="Search for ad request...">
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>

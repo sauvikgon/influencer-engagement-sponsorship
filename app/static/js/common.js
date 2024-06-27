@@ -173,8 +173,17 @@ document.querySelectorAll('.btn[data-target]').forEach(button => {
 
         // Load the modal content
         var modal = $(modalTarget);
-        modal.find('.modal-body').load(detailsUrl, function() {
-            modal.modal('show');
+        $.ajax({
+            url: detailsUrl,
+            method: 'GET',
+            success: function(data) {
+                modal.find('.modal-body').html(data);
+                modal.modal('show');
+            },
+            error: function() {
+                modal.find('.modal-body').html('<p>Error loading details.</p>');
+                modal.modal('show');
+            }
         });
     }
     

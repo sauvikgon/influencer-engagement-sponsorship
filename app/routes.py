@@ -416,8 +416,17 @@ def sponsor_campaigns():
 @login_required
 def sponsor_find():
     if current_user.role == 'sponsor':
-        active_influencer = User.query.filter_by(role='influencer').all()
-        # print(active_influencer)
+        # active_influencer = User.query.filter_by(role='influencer').all()
+        # # print(active_influencer)
+        # return render_template('sponsor_find.html', sponsor=current_user, active_influencer=active_influencer)
+        search_query = request.args.get('search', '')
+        if search_query:
+            # Perform search query on your users
+            active_influencer = User.query.filter(User.role == 'influencer', User.username.ilike(f"%{search_query}%")).all()
+        else:
+            # Fetch all users if no search query
+            active_influencer = User.query.filter_by(role='influencer').all()
+
         return render_template('sponsor_find.html', sponsor=current_user, active_influencer=active_influencer)
     return redirect(url_for('main.home'))
 
@@ -607,9 +616,16 @@ def reject_request_sponsor(id):
 @login_required
 def influencer_find():
     if current_user.role == 'influencer':
-        influencer = current_user
-        active_campaigns = Campaign.query.filter_by(visibility='public').all()
+        # influencer = current_user
+        # active_campaigns = Campaign.query.filter_by(visibility='public').all()
 
+        # return render_template('influencer_find.html', influencer=current_user, active_campaigns=active_campaigns)
+        search_query = request.args.get('search', '')
+        if search_query:
+            active_campaigns = Campaign.query.filter(Campaign.name.ilike(f'%{search_query}%')).all()
+        else:
+            active_campaigns = Campaign.query.all()
+        
         return render_template('influencer_find.html', influencer=current_user, active_campaigns=active_campaigns)
     return redirect(url_for('main.home'))
 
@@ -642,11 +658,28 @@ def admin_info():
 @login_required
 def admin_find():
     if current_user.role == 'admin':
-        users = User.query.all()
+        # users = User.query.all()
         campaigns = Campaign.query.all()
         ad_requests = AdRequest.query.all()
+        search_query1 = request.args.get('search-user','')
+        if search_query1:
+            users = User.query.filter(User.username.ilike(f"%{search_query1}%"))
+        else:
+            users = User.query.all()
+
+        search_query2 = request.args.get('search-campaign','')
+        if search_query2:
+            campaigns = Campaign.query.filter(Campaign.name.ilike(f'%{search_query2}%'))
+        else:
+            campaigns = Campaign.query.all()
+        
+        search_query3 = request.args.get('search-adrequest','')
+        if search_query3:
+            ad_requests = AdRequest.query.filter(AdRequest.requirements.ilike(f'%{search_query3}%'))
+        else:
+            ad_requests = AdRequest.query.all()
+
         return render_template('admin_find.html', users=users, campaigns=campaigns, ad_requests=ad_requests)
-    return redirect(url_for('main.home'))
 
 @main.route('/admin/stats')
 @login_required

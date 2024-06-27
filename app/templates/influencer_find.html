@@ -79,11 +79,20 @@ document.addEventListener('DOMContentLoaded', function() {
         var button = $(event.relatedTarget);
         var campaignId = button.data('id');
 
-        // Hide the adrequest modal when opening the campaign modal
+        // Hide the ad request modal when opening the campaign modal
         $('#adRequestModal').modal('hide');
 
         var modal = $(this);
-        modal.find('.modal-body').load('/campaign_details/' + campaignId);
+        $.ajax({
+            url: '/campaign_details/' + campaignId,
+            method: 'GET',
+            success: function(data) {
+                modal.find('.modal-body').html(data);
+            },
+            error: function() {
+                modal.find('.modal-body').html('<p>Error loading campaign details.</p>');
+            }
+        });
     });
 
     $('#adRequestModal').on('show.bs.modal', function (event) {
@@ -94,7 +103,16 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#campaignModal').modal('hide');
 
         var modal = $(this);
-        modal.find('.modal-body').load('/ad_request_details/' + adRequestId);
+        $.ajax({
+            url: '/ad_request_details/' + adRequestId,
+            method: 'GET',
+            success: function(data) {
+                modal.find('.modal-body').html(data);
+            },
+            error: function() {
+                modal.find('.modal-body').html('<p>Error loading ad request details.</p>');
+            }
+        });
     });
 });
 </script>
