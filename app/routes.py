@@ -382,10 +382,13 @@ def sponsor_profile():
     active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id)\
     .filter(Campaign.user_id == sponsor.id, AdRequest.status_sponsor == "Accepted").all()
     new_requests = AdRequest.query.join(Campaign, AdRequest.campaign_id == Campaign.id)\
-                              .filter(Campaign.user_id == sponsor.id, AdRequest.status_sponsor == 'Pending').all()
+    .filter(
+        Campaign.user_id == sponsor.id,
+        AdRequest.status_sponsor == 'Pending', AdRequest.status_influencer != 'Rejected'
+    ).all()
     active_influencer = User.query.filter_by(role='influencer').all()
     influencer_pending_request = AdRequest.query.join(Campaign, AdRequest.campaign_id == Campaign.id)\
-                              .filter(Campaign.user_id == sponsor.id, AdRequest.status_influencer == 'Pending').all()
+                              .filter(Campaign.user_id == sponsor.id, AdRequest.status_influencer == 'Pending', AdRequest.status_sponsor != 'Rejected').all()
 
     return render_template('sponsor_profile.html',
                            sponsor=sponsor,
@@ -492,7 +495,8 @@ def influencer_profile():
     new_requests = AdRequest.query.filter(
         (AdRequest.influencer_id == public_influencer.id) | 
         (AdRequest.influencer_id == influencer.id),
-        AdRequest.status_influencer == 'Pending'
+        AdRequest.status_influencer == 'Pending',
+        AdRequest.status_sponsor != 'Rejected'
     ).all()
     sponsor_pending_request = AdRequest.query.filter_by(influencer_id=influencer.id, status_sponsor='Pending').all()
 
@@ -590,6 +594,7 @@ def accept_request_influencer(id):
 def reject_request_influencer(id):
     # Implement the logic to reject ad request
     ad_request = AdRequest.query.get_or_404(id)
+    ad_request.influencer_id = current_user.id
     ad_request.status_influencer = 'Rejected'
     db.session.commit()
     return redirect(url_for('main.influencer_profile'))
