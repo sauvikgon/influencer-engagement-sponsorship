@@ -57,7 +57,7 @@ def register_sponsor():
         db.session.add(user)
         db.session.commit()
         flash('You have successfully registered as a sponsor.')
-        return redirect(url_for('main.login'))
+        return redirect(url_for('main.home'))
     return render_template('register_sponsor.html', form=form)
 
 @main.route('/register/influencer', methods=['GET', 'POST'])
@@ -72,7 +72,7 @@ def register_influencer():
         db.session.add(user)
         db.session.commit()
         flash('You have successfully registered as an influencer.')
-        return redirect(url_for('main.login'))
+        return redirect(url_for('main.home'))
     return render_template('register_influencer.html', form=form)
 
 @main.route('/login', methods=['GET', 'POST'])
@@ -82,9 +82,9 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
-            return redirect(url_for('main.dashboard'))
+            return redirect(url_for('main.home'))
         flash('Invalid username or password')
-    return render_template('login.html', form=form)
+    return render_template('home-new.html', form=form)
 
 @main.route('/logout')
 def logout():
