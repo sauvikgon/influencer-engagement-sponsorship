@@ -21,7 +21,7 @@ main = Blueprint('main', __name__)
 #     return render_template('home.html')
 
 @main.route('/')
-@main.route('/home')
+# @main.route('/home')
 def home():
     form = LoginForm()  # Replace with your actual form class
     return render_template('home-new.html', form=form)
@@ -82,7 +82,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
-            return redirect(url_for('main.home'))
+            return redirect(url_for('main.dashboard'))
         flash('Invalid username or password')
     return render_template('home-new.html', form=form)
 
