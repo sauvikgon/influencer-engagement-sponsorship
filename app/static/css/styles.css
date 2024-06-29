@@ -192,6 +192,37 @@ body {
     color: #ddd;
 }
 
+.dark-mode .modal-content {
+    background-color: rgba(0, 0, 0, 0.9); /* Dark background for modal */
+    color: #ddd; /* Light text color for modal content */
+}
+
+.dark-mode .modal-header, 
+.dark-mode .modal-body, 
+.dark-mode .modal-footer {
+    border-color: rgba(255, 255, 255, 0.1); /* Border color for modal sections */
+}
+
+/* Ensure dark mode for buttons inside the modal */
+.dark-mode .btn {
+    filter: brightness(85%);
+}
+
+.dark-mode .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.dark-mode .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+/* Ensure text color in modals */
+.dark-mode .text-danger {
+    color: #ff4d4d; /* Example color for flagged content in dark mode */
+}
+
 .dark-mode .glassmorphism {
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);

@@ -215,10 +215,12 @@ document.querySelectorAll('.btn[data-target]').forEach(button => {
 // This is for dark mode for all pages:
 
 document.getElementById('darkSwitch').addEventListener('change', function() {
-    if (this.checked) {
+    if (this.checked) { 
         document.body.classList.add('dark-mode');
+        localStorage.setItem('dark-mode', 'enabled');
     } else {
         document.body.classList.remove('dark-mode');
+        localStorage.setItem('dark-mode', 'disabled');
     }
 });
 
@@ -238,6 +240,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
             localStorage.setItem('dark-mode', 'disabled');
         }
     });
+
+    // Handle dynamically added content like modals
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length) {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE && document.body.classList.contains('dark-mode')) {
+                        node.classList.add('dark-mode');
+                    }
+                });
+            }
+        });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
 });
 
 // This is end for dark mode for all pages

@@ -1,10 +1,19 @@
-<h5>{{ ad_request.requirements }}</h5>
-{% if ad_request.campaign.flag == 1 %}
-    <p class="text-danger">The campaign associated with this ad request is flagged</p>
-{% endif %}
-<!-- <p>Campaign Id: {{ ad_request.campaign_id }}</p>
-<p>Campaign Name: {{ ad_request.campaign.name }}</p> -->
-<p>Campaign: <a href="#" class="campaign-link" data-toggle="modal" data-target="#campaignModal" data-id="{{ ad_request.campaign_id }}">{{ ad_request.campaign.name }}</a></p>
-<p>Payment Amount: {{ ad_request.payment_amount }}</p>
-<p>Sponsor Status: {{ ad_request.status_sponsor }}</p>
-<p>Influencer Status: {{ ad_request.status_influencer }}</p>
+<div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title">{{ ad_request.requirements }}</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+        {% if ad_request.campaign.flag == 1 %}
+            <p class="text-danger">The campaign associated with this ad request is flagged</p>
+        {% endif %}
+        <p>Campaign: <a href="#" class="campaign-link" data-toggle="modal" data-target="#campaignModal" data-id="{{ ad_request.campaign_id }}">{{ ad_request.campaign.name }}</a></p>
+        <p>Payment Amount: {{ ad_request.payment_amount }}</p>
+        <p>Sponsor Status: {{ ad_request.status_sponsor }}</p>
+        <p>Influencer Status: {{ ad_request.status_influencer }}</p>
+    </div>
+    <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div> -->
+</div>
+
