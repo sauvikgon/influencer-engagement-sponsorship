@@ -375,7 +375,7 @@ def delete_ad_request(id):
 @login_required
 def sponsor_profile():
     if current_user.role != 'sponsor':
-        return redirect(url_for('main.home'))
+        return redirect(url_for('main.dashboard'))
 
     sponsor = current_user
     # active_campaigns = Campaign.query.filter_by(visibility='public').all()
@@ -412,7 +412,7 @@ def sponsor_campaigns():
     if current_user.role == 'sponsor':
         campaigns = Campaign.query.filter_by(user_id=current_user.id).all()
         return render_template('sponsor_campaigns.html', campaigns=campaigns)
-    return redirect(url_for('main.home'))
+    return redirect(url_for('main.dashboard'))
 
 
 @main.route('/sponsor/find')
@@ -431,7 +431,7 @@ def sponsor_find():
             active_influencer = User.query.filter_by(role='influencer').all()
 
         return render_template('sponsor_find.html', sponsor=current_user, active_influencer=active_influencer)
-    return redirect(url_for('main.home'))
+    return redirect(url_for('main.dashboard'))
 
 @main.route('/influencer_details/<int:id>')
 @login_required
@@ -483,7 +483,7 @@ def sponsor_stats():
 @login_required
 def influencer_profile():
     if current_user.role != 'influencer':
-        return redirect(url_for('main.home'))
+        return redirect(url_for('main.dashboard'))
 
     influencer = current_user
     print(current_user.id)
@@ -638,7 +638,7 @@ def influencer_find():
             active_campaigns = Campaign.query.filter_by(visibility='public').all()
         
         return render_template('influencer_find.html', influencer=current_user, active_campaigns=active_campaigns)
-    return redirect(url_for('main.home'))
+    return redirect(url_for('main.dashboard'))
 
 @main.route('/influencer/stats')
 @login_required
@@ -663,7 +663,7 @@ def admin_info():
         campaigns = Campaign.query.all()
         ad_requests = AdRequest.query.all()
         return render_template('admin_info.html', users=users, campaigns=campaigns, ad_requests=ad_requests)
-    return redirect(url_for('main.home'))
+    return redirect(url_for('main.dashboard'))
 
 @main.route('/admin/find')
 @login_required
@@ -691,6 +691,7 @@ def admin_find():
             ad_requests = AdRequest.query.all()
 
         return render_template('admin_find.html', users=users, campaigns=campaigns, ad_requests=ad_requests)
+    return redirect(url_for('main.dashboard'))
 
 @main.route('/admin/stats')
 @login_required
