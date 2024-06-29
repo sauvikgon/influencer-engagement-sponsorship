@@ -4,7 +4,7 @@ from app import db
 from app.models import User, Campaign, AdRequest
 # from app.forms import RegistrationForm, LoginForm, CampaignForm, AdRequestForm
 from app.forms import SponsorRegistrationForm, InfluencerRegistrationForm, LoginForm, CampaignForm, AdRequestForm
-from sqlalchemy import or_
+from sqlalchemy import and_,or_
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from functools import wraps
@@ -425,7 +425,7 @@ def sponsor_find():
         search_query = request.args.get('search', '')
         if search_query:
             # Perform search query on your users
-            active_influencer = User.query.filter(User.role == 'influencer', User.username.ilike(f"%{search_query}%")).all()
+            active_influencer = User.query.filter(User.role == 'influencer', or_(User.username.ilike(f"%{search_query}%"), User.platforms.ilike(f"%{search_query}%"), User.category.ilike(f"%{search_query}%"), User.niche.ilike(f"%{search_query}%"))).all()
         else:
             # Fetch all users if no search query
             active_influencer = User.query.filter_by(role='influencer').all()
@@ -489,8 +489,14 @@ def influencer_profile():
     print(current_user.id)
     public_influencer = User.query.filter_by(username='Public').first()
     # active_campaigns = Campaign.query.filter_by(visibility='public').all()
-    active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id)\
-    .filter(AdRequest.status_influencer == 'Accepted', ((AdRequest.influencer_id == influencer.id) | (AdRequest.influencer_id == public_influencer.id))).all()
+    active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id) \
+    # .filter(or_(
+    #     and_(AdRequest.status_influencer == 'Accepted', AdRequest.influencer_id == current_user.id),
+    #     and_(AdRequest.status_influencer == 'Pending', AdRequest.influencer_id == public_influencer.id)
+    # )).all()
+    # To show only accepted campaigns
+    active_campaigns = Campaign.query.join(AdRequest, Campaign.id == AdRequest.campaign_id) \
+    .filter(and_(AdRequest.status_influencer == 'Accepted', AdRequest.influencer_id == current_user.id)).all()
     print(active_campaigns)
     new_requests = AdRequest.query.filter(
         (AdRequest.influencer_id == public_influencer.id) | 
@@ -629,7 +635,7 @@ def influencer_find():
         if search_query:
             active_campaigns = Campaign.query.filter(Campaign.name.ilike(f'%{search_query}%')).all()
         else:
-            active_campaigns = Campaign.query.all()
+            active_campaigns = Campaign.query.filter_by(visibility='public').all()
         
         return render_template('influencer_find.html', influencer=current_user, active_campaigns=active_campaigns)
     return redirect(url_for('main.home'))
