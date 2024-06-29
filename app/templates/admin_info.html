@@ -201,5 +201,29 @@
     </div>
 </div>
 
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#campaignModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var campaignId = button.data('id');
+    
+            // Hide the adrequest modal when opening the campaign modal
+            $('#adRequestModal').modal('hide');
+    
+            var modal = $(this);
+            modal.find('.modal-body').load('/campaign_details/' + campaignId);
+        });
+    
+        $('#adRequestModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var adRequestId = button.data('id');
+    
+            // Hide the campaign modal when opening the ad request modal
+            $('#campaignModal').modal('hide');
+    
+            var modal = $(this);
+            modal.find('.modal-body').load('/ad_request_details/' + adRequestId);
+        });
+    });
+    </script>
 {% endblock %}

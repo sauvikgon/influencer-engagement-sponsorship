@@ -8,7 +8,8 @@ from sqlalchemy import and_,or_
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from functools import wraps
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from collections import defaultdict
 import os
 import uuid
 
@@ -640,15 +641,53 @@ def influencer_find():
         return render_template('influencer_find.html', influencer=current_user, active_campaigns=active_campaigns)
     return redirect(url_for('main.dashboard'))
 
+# @main.route('/influencer/stats')
+# @login_required
+# def influencer_stats():
+#     if current_user.role != 'influencer':
+#         return redirect(url_for('main.dashboard'))
+
+#     # For demonstration purposes, we use dummy data
+#     months = ['January', 'February', 'March', 'April', 'May', 'June']
+#     earnings = [500, 700, 800, 600, 900, 1100]
+
+#     return render_template('influencer_stats.html',
+#                            months=months,
+#                            earnings=earnings)
+
 @main.route('/influencer/stats')
 @login_required
 def influencer_stats():
     if current_user.role != 'influencer':
         return redirect(url_for('main.dashboard'))
 
-    # For demonstration purposes, we use dummy data
-    months = ['January', 'February', 'March', 'April', 'May', 'June']
-    earnings = [500, 700, 800, 600, 900, 1100]
+    # Query the database for the ad requests related to the current influencer
+    ad_requests = AdRequest.query.filter_by(influencer_id=current_user.id).all()
+    earnings_by_month = defaultdict(float)
+
+    for ad_request in ad_requests:
+        start_date = ad_request.campaign.start_date
+        end_date = ad_request.campaign.end_date
+        payment_amount = ad_request.payment_amount
+
+        # Calculate the total number of days in the campaign
+        total_days = (end_date - start_date).days + 1
+
+        # Calculate the earnings per day
+        daily_earning = payment_amount / total_days
+
+        current_date = start_date
+        while current_date <= end_date:
+            month = current_date.strftime('%B')
+            days_in_month = (current_date.replace(day=28) + timedelta(days=4)).replace(day=1) - current_date.replace(day=1)
+            month_days = min(days_in_month.days, (end_date - current_date).days + 1)
+            
+            earnings_by_month[month] += daily_earning * month_days
+            current_date += timedelta(days=month_days)
+
+    # Ensure we have data for all months
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    earnings = [earnings_by_month.get(month, 0) for month in months]
 
     return render_template('influencer_stats.html',
                            months=months,
