@@ -18,8 +18,8 @@
         </div>
     </div>
     <div class="col-md-9">
-        <div class="profile-main">
-            <h2>Welcome, {{ current_user.username }}!</h2>
+        <div class="jumbotron glassmorphism mb-4 animated" id="jumbotron">
+            <!-- <h2>Welcome, {{ current_user.username }}!</h2> -->
             {% if current_user.flag == 1 %}
                 <h1><p class="text-danger">You are flagged by a Admin</p></h1>
             {% endif %}
@@ -28,7 +28,7 @@
                 <div class="row-container">
                     {% for campaign in active_campaigns %}
                     <div class="col-md-4">
-                        <div class="request-box card">
+                        <div class="request-box card glassmorphism">
                             <div class="card-body">
                                 <h4 class="card-title">{{ campaign.name }}</h4>
                                 <p class="card-text">{{ campaign.details }}</p>
@@ -48,7 +48,7 @@
                 <div class="row-container">
                     {% for request in new_requests %}
                     <div class="col-md-4">
-                        <div class="request-box card">
+                        <div class="request-box card glassmorphism">
                             <div class="card-body">
                                 <h4 class="card-title">{{ request.requirements }}</h4>
                                 <p class="card-text">Campaign: {{ request.campaign.name }}</p>
@@ -74,7 +74,7 @@
                 <div class="row-container">
                     {% for request in sponsor_pending_request %}
                     <div class="col-md-4">
-                        <div class="request-box card">
+                        <div class="request-box card glassmorphism">
                             <div class="card-body">
                                 <h4 class="card-title">{{ request.requirements }}</h4>
                                 <p class="card-text">Campaign: {{ request.campaign.name }}</p>

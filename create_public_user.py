@@ -8,13 +8,13 @@ app = create_app()
 # Create a new application context
 with app.app_context():
     # Check if the 'Public' influencer already exists
-    public_influencer = User.query.filter_by(username='Public').first()
+    public_influencer = User.query.filter_by(username='Public2').first()
     
     if not public_influencer:
         # Create a new 'Public' influencer
         public_influencer = User(
-            username='Public',
-            email='public@example.com',
+            username='Public2',
+            email='public2@example.com',
             password_hash=generate_password_hash('publicpassword'),  # Replace with a secure password
             role='influencer',
             industry='',

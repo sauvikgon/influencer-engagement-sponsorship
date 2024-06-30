@@ -7,11 +7,12 @@
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
+<div class="admin-profile-padding"></div>
 <div class="scrollable-container">
     <div class="row-container">
         {% for user in users %}
         <div class="col-md-3">
-            <div class="request-box card">
+            <div class="request-box card glassmorphism">
                 <div class="card-body">
                     <h4 class="card-title">{{ user.username }}</h4>
                     
@@ -42,11 +43,12 @@
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
+<div class="admin-profile-padding"></div>
 <div class="scrollable-container">
     <div class="row-container">
         {% for campaign in campaigns %}
         <div class="col-md-3">
-            <div class="request-box card">
+            <div class="request-box card glassmorphism">
                 <div class="card-body">
                     <h4 class="card-title">{{ campaign.name }}</h4>
                     <p class="card-text">{{ campaign.details }}</p>
@@ -77,11 +79,12 @@
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
+<div class="admin-profile-padding"></div>
 <div class="scrollable-container">
     <div class="row-container">
         {% for request in ad_requests %}
         <div class="col-md-3">
-            <div class="request-box card">
+            <div class="request-box card glassmorphism">
                 <div class="card-body">
                     <h4 class="card-title">{{ request.requirements }}</h4>
                     <p class="card-text">Campaign: {{ request.campaign.name }}</p>
@@ -199,7 +202,7 @@
 </div>
 
 
-<!-- <script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         // Function to handle opening a modal and loading details
         function loadModal(modalId, detailsUrl) {
@@ -224,6 +227,10 @@
                     detailsUrl = `/admin_details/${userId}`;
                 } else if (modalTarget === '#sponsorModal') {
                     detailsUrl = `/sponsor_details/${userId}`;
+                } else if (modalTarget === '#campaignModal') {
+                    detailsUrl = `/campaign_details/${userId}`;
+                } else if (modalTarget === '#adRequestModal') {
+                    detailsUrl = `/ad_request_details/${userId}`;
                 }
                 
                 if (userId) {
@@ -313,6 +320,6 @@
             container.scrollTop = Math.round(scrollPosition / rowHeight) * rowHeight;
         }
     });
-</script> -->
+</script>
     
 {% endblock %}

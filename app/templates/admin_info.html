@@ -1,22 +1,15 @@
 {% extends "admin_dashboard.html" %}
 {% block tab_content %}
-<h2>Information</h2>
+<!-- <h2>Information</h2> -->
 <h3>Users</h3>
-<!-- <ul>
-    {% for user in users %}
-    <li>{{ user.username }} - {{ user.role }}</li>
-    {% endfor %}
-</ul> -->
 <div class="scrollable-container scrollable-container-custom-height-adm-1">
     <div class="row-container">
         {% for user in users %}
         <div class="col-md-3">
-            <div class="request-box card">
+            <div class="request-box card animated glassmorphism">
                 <div class="card-body">
                     <h4 class="card-title">{{ user.username }}</h4>
-                    <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#influencerModal" data-id="{{ user.id }}">View</button> -->
                     {% if user.flag == 1 %}
-                        <!-- <p class="text-danger">This User is unflagged</p> -->
                         <form method="POST" action="{{ url_for('main.unflag_user', id=user.id) }}">
                             <button type="submit" class="btn btn-danger">Unflag</button>
                         </form>
@@ -28,29 +21,27 @@
                     {% elif user.role == 'sponsor' %}
                         <button class="btn btn-primary" data-toggle="modal" data-target="#sponsorModal" data-id="{{ user.id }}">View</button>
                     {% else %}
-                        <p> Sorry user type mismatch </p>
+                        <p>Sorry, user type mismatch</p>
                     {% endif %}
-                    <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#influencerModal" data-id="{{ user.id }}">View</button> -->
-                    <!-- Add form to flag campaign -->
                     {% if user.flag == 0 %}
                         <form method="POST" action="{{ url_for('main.flag_user', id=user.id) }}">
                             <button type="submit" class="btn btn-danger">Flag</button>
                         </form>
                     {% endif %}
-
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
-<div class="influencer-profile-padding"></div>
+
+<div class="admin-profile-padding"></div>
 <h3>Campaigns</h3>
 <div class="scrollable-container scrollable-container-custom-height-adm-2">
     <div class="row-container">
         {% for campaign in campaigns %}
         <div class="col-md-3">
-            <div class="request-box card">
+            <div class="request-box card glassmorphism animated">
                 <div class="card-body">
                     <h4 class="card-title">{{ campaign.name }}</h4>
                     <p class="card-text">{{ campaign.details }}</p>
@@ -61,7 +52,6 @@
                         </form>
                     {% endif %}
                     <button class="btn btn-primary" data-toggle="modal" data-target="#campaignModal" data-id="{{ campaign.id }}">View</button>
-                    <!-- Add form to flag campaign -->
                     {% if campaign.flag == 0 %}
                         <form method="POST" action="{{ url_for('main.flag_campaign', id=campaign.id) }}">
                             <button type="submit" class="btn btn-danger">Flag</button>
@@ -73,14 +63,14 @@
         {% endfor %}
     </div>
 </div>
+
 <div class="admin-profile-padding"></div>
 <h3>Ad Requests</h3>
 <div class="scrollable-container scrollable-container-custom-height-adm-3">
     <div class="row-container">
         {% for request in ad_requests %}
-        <!-- <li>{{ request.requirements }} - {{ request.status }}</li> -->
         <div class="col-md-3">
-            <div class="request-box card">
+            <div class="request-box card glassmorphism animated">
                 <div class="card-body">
                     <h4 class="card-title">{{ request.requirements }}</h4>
                     <p class="card-text">Campaign: {{ request.campaign.name }}</p>
@@ -89,8 +79,6 @@
                         <p class="text-danger">The campaign associated with this ad request is flagged</p>
                     {% endif %}
                     <button class="btn btn-primary" data-toggle="modal" data-target="#adRequestModal" data-id="{{ request.id }}">View</button>
-                    <!-- <a href="{{ url_for('main.edit_ad_request_infl', id=request.id) }}" class="btn btn-success">Edit</a> -->
-                    <!-- <a href="{{ url_for('main.reject_request_influencer', id=request.id) }}" class="btn btn-danger">Reject</a> -->
                 </div>
             </div>
         </div>

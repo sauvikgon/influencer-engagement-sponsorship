@@ -45,15 +45,15 @@
 }
 
 .scrollable-container-custom-height-adm-1 {
-    height: 140px; /* Custom height for specific instance */
+    height: 169px; /* Custom height for specific instance */
 }
 
 .scrollable-container-custom-height-adm-2 {
-    height: 140px; /* Custom height for specific instance */
+    height: 170px; /* Custom height for specific instance */
 }
 
 .scrollable-container-custom-height-adm-3 {
-    height: 160px; /* Custom height for specific instance */
+    height: 180px; /* Custom height for specific instance */
 }
 
 .sponsor-campaign-padding {
@@ -79,13 +79,14 @@
 .row-container {
     display: flex;
     flex-wrap: wrap; /* Wrap items into rows */
+    margin-top: 10px;
 }
 
 .row-container > .col-md-3 {
     flex: 0 0 25%; /* Each item takes 25% of the container width */
     box-sizing: border-box;
     scroll-snap-align: start; /* Snap align to start */
-    margin-bottom: 10px; /* Optional: spacing between items */
+    margin-bottom: 15px; /* Optional: spacing between items */
 }
 
 .scrollable-container::-webkit-scrollbar {

@@ -1,8 +1,9 @@
 {% extends "sponsor_dashboard.html" %}
 {% block tab_content %}
 <h2>Profile</h2>
+<div class="admin-profile-padding"></div>
 <div class="col-md-13">
-    <div class="profile-main">
+    <div class="jumbotron glassmorphism mb-4 animated" id="jumbotron">
         <!-- <h2>Welcome, {{ current_user.username }}!</h2> -->
         {% if current_user.flag == 1 %}
             <h1><p class="text-danger">You are flagged by a Admin</p></h1>
@@ -13,7 +14,7 @@
                 <div class="row-container">
                     {% for campaign in active_campaigns %}
                     <div class="col-md-3">
-                        <div class="request-box card">
+                        <div class="request-box card glassmorphism">
                             <div class="card-body">
                                 <h4 class="card-title">{{ campaign.name }}</h4>
                                 <p class="card-text">{{ campaign.details }}</p>
@@ -34,8 +35,8 @@
             <div class="scrollable-container scrollable-container-custom-height-spon-2">
                 <div class="row-container">
                     {% for request in new_requests %}
-                    <div class="col-md-3">
-                        <div class="request-box card">
+                    <div class="col-md-4">
+                        <div class="request-box card glassmorphism">
                             <div class="card-body">
                                 <h4 class="card-title">{{ request.requirements }}</h4>
                                 <p class="card-text">Campaign: {{ request.campaign.name }}</p>
@@ -65,8 +66,8 @@
         <div class="scrollable-container scrollable-container-custom-height-spon-3">
             <div class="row-container">
                 {% for request in influencer_pending_request %}
-                <div class="col-md-3">
-                    <div class="request-box card">
+                <div class="col-md-4">
+                    <div class="request-box card glassmorphism">
                         <div class="card-body">
                             <h4 class="card-title">{{ request.requirements }}</h4>
                             <p class="card-text">Campaign: {{ request.campaign.name }}</p>
