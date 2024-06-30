@@ -634,7 +634,7 @@ def influencer_find():
         # return render_template('influencer_find.html', influencer=current_user, active_campaigns=active_campaigns)
         search_query = request.args.get('search', '')
         if search_query:
-            active_campaigns = Campaign.query.filter(Campaign.name.ilike(f'%{search_query}%')).all()
+            active_campaigns = Campaign.query.filter(and_(Campaign.name.ilike(f'%{search_query}%'), Campaign.visibility=='public')).all()
         else:
             active_campaigns = Campaign.query.filter_by(visibility='public').all()
         
