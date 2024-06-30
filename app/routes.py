@@ -713,19 +713,39 @@ def admin_find():
         ad_requests = AdRequest.query.all()
         search_query1 = request.args.get('search-user','')
         if search_query1:
-            users = User.query.filter(User.username.ilike(f"%{search_query1}%"))
+            users = User.query.filter(
+                or_(
+                    User.username.ilike(f"%{search_query1}%"),
+                    User.platforms.ilike(f"%{search_query1}%"),
+                    User.role.ilike(f"%{search_query1}%"),
+                    User.industry.ilike(f"%{search_query1}%"),
+                    User.category.ilike(f"%{search_query1}%"),
+                    User.niche.ilike(f"%{search_query1}%"),
+                    User.flag.ilike(f"%{search_query1}%")
+                )
+            )
         else:
             users = User.query.all()
 
         search_query2 = request.args.get('search-campaign','')
         if search_query2:
-            campaigns = Campaign.query.filter(Campaign.name.ilike(f'%{search_query2}%'))
+            campaigns = Campaign.query.filter(
+                or_(
+                    Campaign.name.ilike(f'%{search_query2}%'),
+                    Campaign.description.ilike(f'%{search_query2}%'),
+                    Campaign.budget.ilike(f'%{search_query2}%'),
+                    Campaign.visibility.ilike(f'%{search_query2}%'),
+                    Campaign.start_date.ilike(f'%{search_query2}%'),
+                    Campaign.end_date.ilike(f'%{search_query2}%'),
+                    Campaign.flag.ilike(f'%{search_query2}%')
+                )
+            )
         else:
             campaigns = Campaign.query.all()
         
         search_query3 = request.args.get('search-adrequest','')
         if search_query3:
-            ad_requests = AdRequest.query.filter(AdRequest.requirements.ilike(f'%{search_query3}%'))
+            ad_requests = AdRequest.query.filter(or_((AdRequest.requirements.ilike(f'%{search_query3}%')),(AdRequest.payment_amount.ilike(f'%{search_query3}%')),(AdRequest.status_influencer.ilike(f'%{search_query3}%')),(AdRequest.status_sponsor.ilike(f'%{search_query3}%'))))
         else:
             ad_requests = AdRequest.query.all()
 
