@@ -592,6 +592,12 @@ def ad_request_details(ad_request_id):
 def accept_request_influencer(id):
     # Implement the logic to accept ad request
     ad_request = AdRequest.query.get_or_404(id)
+    public_influencer = User.query.filter_by(username='Public').first()
+    if ad_request.influencer_id == public_influencer.id:
+        ad_request.influencer_id = current_user.id
+    elif ad_request.influencer_id != current_user.id:
+        flash('You do not have permission to accept this ad request.', 'danger')
+        return redirect(url_for('main.dashboard'))
     ad_request.status_influencer = 'Accepted'
     db.session.commit()
     return redirect(url_for('main.influencer_profile'))
