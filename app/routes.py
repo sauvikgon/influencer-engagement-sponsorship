@@ -4,7 +4,7 @@ from app import db
 from app.models import User, Campaign, AdRequest
 # from app.forms import RegistrationForm, LoginForm, CampaignForm, AdRequestForm
 from app.forms import SponsorRegistrationForm, InfluencerRegistrationForm, LoginForm, CampaignForm, AdRequestForm
-from sqlalchemy import and_,or_
+from sqlalchemy import and_, or_, cast, String
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from functools import wraps
@@ -727,7 +727,7 @@ def admin_find():
                     User.industry.ilike(f"%{search_query1}%"),
                     User.category.ilike(f"%{search_query1}%"),
                     User.niche.ilike(f"%{search_query1}%"),
-                    User.flag.ilike(f"%{search_query1}%")
+                    cast(User.flag, String).ilike(f"%{search_query1}%")
                 )
             )
         else:
@@ -739,11 +739,11 @@ def admin_find():
                 or_(
                     Campaign.name.ilike(f'%{search_query2}%'),
                     Campaign.description.ilike(f'%{search_query2}%'),
-                    Campaign.budget.ilike(f'%{search_query2}%'),
+                    cast(Campaign.budget, String).ilike(f'%{search_query2}%'),
                     Campaign.visibility.ilike(f'%{search_query2}%'),
-                    Campaign.start_date.ilike(f'%{search_query2}%'),
-                    Campaign.end_date.ilike(f'%{search_query2}%'),
-                    Campaign.flag.ilike(f'%{search_query2}%')
+                    cast(Campaign.start_date, String).ilike(f'%{search_query2}%'),
+                    cast(Campaign.end_date, String).ilike(f'%{search_query2}%'),
+                    cast(Campaign.flag, String).ilike(f'%{search_query2}%')
                 )
             )
         else:
@@ -751,7 +751,14 @@ def admin_find():
         
         search_query3 = request.args.get('search-adrequest','')
         if search_query3:
-            ad_requests = AdRequest.query.filter(or_((AdRequest.requirements.ilike(f'%{search_query3}%')),(AdRequest.payment_amount.ilike(f'%{search_query3}%')),(AdRequest.status_influencer.ilike(f'%{search_query3}%')),(AdRequest.status_sponsor.ilike(f'%{search_query3}%'))))
+            ad_requests = AdRequest.query.filter(
+                or_(
+                    AdRequest.requirements.ilike(f'%{search_query3}%'),
+                    cast(AdRequest.payment_amount, String).ilike(f'%{search_query3}%'),
+                    AdRequest.status_influencer.ilike(f'%{search_query3}%'),
+                    AdRequest.status_sponsor.ilike(f'%{search_query3}%')
+                )
+            )
         else:
             ad_requests = AdRequest.query.all()
 
